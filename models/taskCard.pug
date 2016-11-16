@@ -1,0 +1,12 @@
+//
+   Created by alexey-detask on 23.10.16.
+tr
+    td(width='25%' class="droppable" data-status="waiting")
+        div(class='taskCard draggable status-waiting' class="ui-widget-content" data-id= v._id)
+            h2 Задача #
+            h3 #{v._id}
+
+                h4 #{performDate(v.dateOfcreation)}
+                .content
+                    h5 #{v.description}
+            a(href="/task/" + v._id) полное описание задачи

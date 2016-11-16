@@ -1,0 +1,24 @@
+{
+  "name": "taskBoardProject",
+  "description": "учебный проект доски задач",
+  "main": "",
+  "authors": [
+    "Alexey Myshevskiy <AlexeyM.ua@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "bootstrap": "^3.3.7",
+    "shave": "^0.2.0",
+    "alertify-js": "^1.8.0"
+  }
+}

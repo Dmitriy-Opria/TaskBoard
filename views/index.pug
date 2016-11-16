@@ -1,0 +1,158 @@
+extends layout
+block content
+    input(id="reloadValue" type="hidden" name="reloadValue" value="")
+    .container-fluid
+        .expanded.row
+            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            button.btn.btn-danger.pull-right(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+        .row
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                table(class='table task-table' width='100%')
+                    thead
+                        tr
+                            td(width='25%') Ожидающие
+                            td(width='25%') В работе
+                            td(width='25%') На проверку
+                            td(width='25%') Закрытые
+                    tbody
+                        each v in tasks
+                            if v.status === 'waiting'
+                                tr
+                                    td(width='25%' class="droppable" data-status="waiting")
+                                        div(class='taskCard draggable waiting' class="ui-widget-content" data-id= v._id)
+                                            h2 Задача #
+                                            h3 #{v._id}
+
+                                                h4 #{performDate(v.dateOfcreation)}
+                                                .content
+                                                    h5 #{v.description}
+                                            a(href="/task/" + v._id) полное описание задачи
+                                    td(width='25%' class="droppable" data-status="in-work")
+                                    td(width='25%' class="droppable" data-status="to-check")
+                                    td(width='25%' class="droppable" data-status="closed")
+                                continue
+                            else if v.status === 'in-work'
+                                tr
+                                    td(width='25%' class="droppable" data-status="waiting")
+                                    td(width='25%' class="droppable" data-status="in-work")
+                                        div(class='taskCard draggable in-work' class="ui-widget-content" data-id= v._id)
+                                            h2 Задача #
+                                            h3 #{v._id}
+
+                                                h4 #{performDate(v.dateOfcreation)}
+                                                .content
+                                                    h5 #{v.description}
+                                            a(href="/task/" + v._id) полное описание задачи
+                                    td(width='25%' class="droppable" data-status="to-check")
+                                    td(width='25%' class="droppable" data-status="closed")
+                            else if v.status === 'to-check'
+                                tr
+                                    td(width='25%' class="droppable" data-status="waiting")
+                                    td(width='25%' class="droppable" data-status="in-work")
+                                    td(width='25%' class="droppable" data-status="to-check")
+                                        div(class='taskCard draggable sto-check' class="ui-widget-content" data-id= v._id)
+                                            h2 Задача #
+                                            h3 #{v._id}
+
+                                                h4 #{performDate(v.dateOfcreation)}
+                                                .content
+                                                    h5 #{v.description}
+                                            a(href="/task/" + v._id) полное описание задачи
+                                    td(width='25%' class="droppable" data-status="closed")
+                            else
+                                tr
+                                    td(width='25%' class="droppable" data-status="waiting")
+                                    td(width='25%' class="droppable" data-status="in-work")
+                                    td(width='25%' class="droppable" data-status="to-check")
+                                    td(width='25%' class="droppable" data-status="closed")
+                                        div(class='taskCard draggable closed' class="ui-widget-content" data-id= v._id)
+                                            h2 Задача #
+                                            h3 #{v._id}
+
+                                                h4 #{performDate(v.dateOfcreation)}
+                                                .content
+                                                    h5 #{v.description}
+                                            a(href="/task/" + v._id) полное описание задачи
+
+    // modal
+    #myModal.modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog.custom-class(role='document')
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                    h4.modal-title Новая задача
+                .modal-body
+                    form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
+
+                            label(for='description') Описание задачи
+                            textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
+
+                            label(for='InputFile') вложить скриншот
+                            input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
+
+                            label(for='priority') приоритет задачи
+                            select#priority.inline(name='priority')
+                                option(value='обычный', selected='selected') обычный
+                                option(value='высокий') высокий
+                                option(value='критичный') критичный
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Отмена
+                    button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
+    script.
+        tinymce.init({
+            selector: 'textarea',
+            height: 500,
+            theme: 'modern',
+            plugins: [
+                'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                'searchreplace wordcount visualblocks visualchars code fullscreen',
+                'insertdatetime media nonbreaking save table contextmenu directionality',
+                'emoticons template paste textcolor colorpicker textpattern imagetools codesample'
+            ],
+            toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image ,print preview | forecolor backcolor emoticons | codesample',
+            image_advtab: true,
+            templates: [
+                {title: 'Test template 1', content: 'Test 1'},
+                {title: 'Test template 2', content: 'Test 2'}
+            ],
+            content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tinymce.com/css/codepen.min.css'
+            ]
+        });
+
+        $(function () {
+            shave(".content h5",70);
+            var d = new Date();
+            d = d.getTime();
+            if (jQuery('#reloadValue').val().length === 0) {
+                jQuery('#reloadValue').val(d);
+                jQuery('body').show();
+            }
+            else {
+                jQuery('#reloadValue').val('');
+                location.reload();
+            }
+            $("#create-form").on('submit', function (form) {
+                tinyMCE.triggerSave();
+                $.ajax({
+                    method: "POST",
+                    url: "/create",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
+                })
+                        .done(function (template) {
+                            $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
+                                    .append(template.html)
+                        })
+                        .fail(function (error) {
+                            // show error message
+                        })
+                        .always(function () {
+                            $("#myModal").modal("hide");
+                        });
+                form.preventDefault();
+            })
+        });

@@ -1,0 +1,57 @@
+@media screen and (min-width: 1366px) {
+  .custom-class {
+    width: 75%;
+    /* either % (e.g. 60%) or px (400px) */
+  }
+}
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  color: #00b7ff;
+}
+.waiting {
+  background-color: #EFD481 !important;
+}
+.in-work {
+  background-color: #E2F7B9 !important;
+}
+.to-check {
+  background-color: #B7F4D9 !important;
+}
+.closed {
+  background-color: #DCEAF4 !important;
+}
+.taskCard {
+  -webkit-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  padding: 15px;
+  display: inline-block;
+}
+.taskCard h2 {
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-block;
+}
+.taskCard h3 {
+  font-size: 16px;
+  font-weight: bold;
+  display: inline-block;
+}
+.taskCard h4 {
+  font-size: 14px;
+  font-weight: bold;
+}
+.taskCard a {
+  font-style: italic;
+  color: #00b7ff !important;
+}
+.drop-hover {
+  border: 2px dotted green;
+}
+.inline {
+  display: inline-block !important;
+  margin: 15px;
+}
