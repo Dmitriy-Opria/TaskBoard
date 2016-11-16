@@ -1,6 +1,10 @@
 # Logs
 logs
 *.log
+<<<<<<< HEAD
+=======
+npm-debug.log*
+>>>>>>> e5c1531d5e2329c5e8f479fe6956478fd8fc8e6e
 
 # Runtime data
 pids
@@ -12,6 +16,9 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+
+# nyc test coverage
+.nyc_output
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -41,6 +48,16 @@ npm-debug.log
 Будет удалено public/
 Будет удалено routes/
 Будет удалено views/
-/node_modules/
+
 /public/javascripts/site.js
 /public/stylesheets/style.less
+
+# Dependency directories
+/node_modules
+jspm_packages
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
