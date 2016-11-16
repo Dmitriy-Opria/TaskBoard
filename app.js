@@ -1,14 +1,14 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var debug = require('debug')('taskBoardProject:server');
-var lessMiddleware = require('less-middleware');
-var locale = require("locale");
-var supported = ["ru","en",'uk'];
-var language;
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require('express'),
+    path = require('path'),
+    favicon = require('serve-favicon'),
+    logger = require('morgan'),
+    debug = require('debug')('taskBoardProject:server'),
+    lessMiddleware = require('less-middleware'),
+    locale = require("locale"),
+    supported = ["ru","en",'uk'],
+    language,
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser');
 
 //var form = new formidable.IncomingForm()
 
