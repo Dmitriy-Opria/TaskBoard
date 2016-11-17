@@ -25,7 +25,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
@@ -41,7 +41,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
@@ -56,7 +56,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="closed")
                             else
@@ -71,7 +71,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
 
     // modal
