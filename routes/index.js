@@ -15,6 +15,10 @@ router.get('/', function (req, res) {
     "use strict";
     res.render('welcome');
 });
+router.get('/registerpage', function (req, res) {
+    "use strict";
+    res.render('register');
+});
 router.post('/registerme', function (req, res) {
     "use strict";
     User.create({

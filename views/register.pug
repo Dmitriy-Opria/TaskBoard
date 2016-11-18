@@ -1,0 +1,30 @@
+extends layout
+block content
+    .container
+        .row
+            .col-md-12
+                .h1.text-center Зарегистрируйтесь
+                    br
+                    small Вам станут доступны все функции сайта
+        .row
+            .col-md-4.col-sm-4
+            .col-md-4.col-sm-4
+                form(action="/login" method="POST")
+                    form(action="/registerme" method="POST")
+                        .form-group
+                            label(for="name") Ваше имя
+                            input(type="text" class="form-control" id="name" name="username")
+                        .form-group
+                            label(for="rEmail") Email address
+                            input(type="email" class="form-control" id="rEmail" placeholder="Email" name="useremail")
+
+                        .form-group
+                            label(for="rPassword") Password
+                            input(type="password" class="form-control" id="rPassword" placeholder="Password" name="userpassword")
+                        button(type="submit" class="btn btn-success btn-lg btn-block")
+                            i(class="fa fa-check" aria-hidden="true")
+                            | &nbsp; Зарегистрироваться
+                        a(href="/" class="btn btn-danger btn-lg btn-block")
+                            i(class="fa fa-times" aria-hidden="true")
+                            | &nbsp; Назад
+            .col-md-4.col-sm-4
