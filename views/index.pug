@@ -4,7 +4,7 @@ block content
     .container-fluid
         .expanded.row
             button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            button.btn.btn-danger.pull-right(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            button.btn.btn-danger.pull-right(type='button', onclick="fireLogout()") выйти
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
@@ -18,14 +18,14 @@ block content
                         each v in tasks
                             if v.status === 'waiting'
                                 tr
-                                    td(width='25%' class="droppable" data-status="waiting")
-                                        div(class='taskCard draggable waiting' class="ui-widget-content" data-id= v._id)
+                                    td(width='25%' data-status="waiting").droppable
+                                        div(class="taskCard draggable waiting ui-widget-content" data-id= v._id)
                                             h2 Задача #
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
@@ -41,7 +41,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
@@ -56,7 +56,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="closed")
                             else
@@ -71,7 +71,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
 
     // modal
@@ -85,17 +85,17 @@ block content
                 .modal-body
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
 
-                            label(for='description') Описание задачи
-                            textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
+                        label(for='description') Описание задачи
+                        textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
-                            label(for='InputFile') вложить скриншот
-                            input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
+                        label(for='InputFile') вложить скриншот
+                        input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
 
-                            label(for='priority') приоритет задачи
-                            select#priority.inline(name='priority')
-                                option(value='обычный', selected='selected') обычный
-                                option(value='высокий') высокий
-                                option(value='критичный') критичный
+                        label(for='priority') приоритет задачи
+                        select#priority.inline(name='priority')
+                            option(value='обычный', selected='selected') обычный
+                            option(value='высокий') высокий
+                            option(value='критичный') критичный
                 .modal-footer
                     button.btn.btn-default(type='button', data-dismiss='modal') Отмена
                     button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
@@ -123,7 +123,7 @@ block content
         });
 
         $(function () {
-            shave(".content h5",70);
+            shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
             if (jQuery('#reloadValue').val().length === 0) {
@@ -143,16 +143,16 @@ block content
                     processData: false,
                     contentType: false
                 })
-                        .done(function (template) {
-                            $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
-                                    .append(template.html)
-                        })
-                        .fail(function (error) {
-                            // show error message
-                        })
-                        .always(function () {
-                            $("#myModal").modal("hide");
-                        });
+                    .done(function (template) {
+                        $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
+                            .append(template.html)
+                    })
+                    .fail(function (error) {
+                        // show error message
+                    })
+                    .always(function () {
+                        $("#myModal").modal("hide");
+                    });
                 form.preventDefault();
             })
         });

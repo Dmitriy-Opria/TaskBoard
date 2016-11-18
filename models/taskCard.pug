@@ -2,11 +2,11 @@
    Created by alexey-detask on 23.10.16.
 tr
     td(width='25%' class="droppable" data-status="waiting")
-        div(class='taskCard draggable status-waiting' class="ui-widget-content" data-id= v._id)
+        div(class="taskCard draggable waiting ui-widget-content" data-id= task._id)
             h2 Задача #
-            h3 #{v._id}
+            h3 #{task._id}
 
-                h4 #{performDate(v.dateOfcreation)}
+                h4 #{task.date}
                 .content
-                    h5 #{v.description}
-            a(href="/task/" + v._id) полное описание задачи
+                    h5 #{task.description}
+            a(href="/task/" + task._id) полное описание задачи
