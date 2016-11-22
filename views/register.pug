@@ -13,47 +13,55 @@ block content
                     .form-group
                         label(for="name") Ваше имя
                         div.forError
-                            input(type="text" class="form-control" id="name" name="username" placeholder="Name")
                             if errors
+                                input(type="text" class="form-control" id="name" name="username" placeholder="Name" value=username)
                                 each error in errors
                                     if error.param === 'username'
                                         div.has-error
                                             label.control-label
                                                 i(class="fa fa-exclamation-triangle" aria-hidden="true")
                                                     | &nbsp; #{error.msg}
+                            else
+                                input(type="text" class="form-control" id="name" name="username" placeholder="Name")
                     .form-group
                         label(for="rEmail") Ваш Email
                         div.forError
-                            input(type="email" class="form-control" id="rEmail" placeholder="Email" name="useremail")
                             if errors
+                                input(type="email" class="form-control" id="rEmail" placeholder="Email" name="useremail" value=useremail)
                                 each error in errors
                                     if error.param === 'useremail'
                                         div.has-error
                                             label.control-label
                                                 i(class="fa fa-exclamation-triangle" aria-hidden="true")
                                                     | &nbsp; #{error.msg}
+                            else
+                                input(type="email" class="form-control" id="rEmail" placeholder="Email" name="useremail")
                     .form-group
                         label(for="rPassword") Пароль
                         div.forError
-                            input(type="password" class="form-control" id="rPassword" placeholder="Password" name="userpassword")
                             if errors
+                                input(type = "password" class="form-control" id="rPassword" placeholder="Password" name="userpassword" value=userpassword)
                                 each error in errors
                                     if error.param === 'userpassword'
                                         div.has-error
                                             label.control-label
                                                 i(class="fa fa-exclamation-triangle" aria-hidden="true")
                                                     | &nbsp; #{error.msg}
+                            else
+                                input(type="password" class="form-control" id="rPassword" placeholder="Password" name="userpassword")
                     .form-group
                         label(for="сPassword") Повторите пароль
                         div.forError
-                            input(type="password" class="form-control" id="сPassword" placeholder="Password" name="confirmpassword")
                             if errors
+                                input(type = "password" class="form-control" id="сPassword" placeholder="Password" name="confirmpassword" value=confirmpassword)
                                 each error in errors
                                     if error.param === 'confirmpassword'
                                         div.has-error
                                             label.control-label
                                                 i(class="fa fa-exclamation-triangle" aria-hidden="true")
                                                     | &nbsp; #{error.msg}
+                            else
+                                input(type="password" class="form-control" id="сPassword" placeholder="Password" name="confirmpassword")
                     button(type="submit" class="btn btn-success btn-lg btn-block")
                         i(class="fa fa-check" aria-hidden="true")
                         | &nbsp; Зарегистрироваться

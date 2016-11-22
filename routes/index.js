@@ -24,11 +24,15 @@ router.post('/registerme', function (req, res) {
     req.check('username','Длина имени должна быть 4-12 символов').isLength({min : 4, max : 12});
     req.check('useremail','Неверный e-mail').isEmail();
     req.check('userpassword','Длина пароля должна быть 4-12 символов').isLength({min : 4, max : 12});
-    req.check('confirmpassword','Пароли не совпадают').equals('userpassword');
+    req.check('confirmpassword','Пароли не совпадают').equals(req.body.userpassword);
 
     var errors = req.validationErrors();
     if(errors){
-        res.render('register',{errors: errors});
+        res.render('register',{errors : errors,
+                                username : req.body.username,
+                                useremail : req.body.useremail,
+                                userpassword :req.body.userpassword,
+                                confirmpassword : req.body.confirmpassword});
     }
     else {
         User.create({
