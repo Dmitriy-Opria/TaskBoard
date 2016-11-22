@@ -21,27 +21,38 @@ router.get('/registerpage', function (req, res) {
 });
 router.post('/registerme', function (req, res) {
     "use strict";
-    User.create({
-        name: req.body.username,
-        email: req.body.useremail,
-        password: req.body.userpassword
-    }, (err, savedObject) => {
-        if (err) {
-            console.error(err);
-        }
-        else {
-            req.session.user = savedObject;
-            req.session.save(function (err) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    console.log(savedObject);
-                    res.redirect("/board");
-                }
-            });
-        }
-    })
+    req.check('username','Длина имени должна быть 4-12 символов').isLength({min : 4, max : 12});
+    req.check('useremail','Неверный e-mail').isEmail();
+    req.check('userpassword','Длина пароля должна быть 4-12 символов').isLength({min : 4, max : 12});
+    req.check('confirmpassword','Пароли не совпадают').equals('userpassword');
+
+    var errors = req.validationErrors();
+    if(errors){
+        res.render('register',{errors: errors});
+    }
+    else {
+        User.create({
+            name: req.body.username,
+            email: req.body.useremail,
+            password: req.body.userpassword
+        }, (err, savedObject) => {
+            if (err) {
+                console.error(err);
+            }
+            else {
+                req.session.user = savedObject;
+                req.session.save(function (err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                    else {
+                        console.log(savedObject);
+                        res.redirect("/board");
+                    }
+                });
+            }
+        })
+    }
 });
 
 /* GET board page. */
