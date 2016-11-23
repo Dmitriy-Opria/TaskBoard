@@ -1,0 +1,192 @@
+extends layout
+block content
+    .container
+        .row
+            .col-md-12.col-sm-12
+                nav(class="navbar navbar-default navbar-fixed-top")
+                    div(class="container-fluid")
+                        div(class="navbar-header")
+                            button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
+                                span(class="sr-only")
+                                    |Toggle navigation
+                                span(class="icon-bar")
+                                span(class="icon-bar")
+                                span(class="icon-bar")
+                            a(class="navbar-brand" href="/board")
+                                | TaskBoard.ua
+                        div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+                            ul(class="nav navbar-nav")
+                                li
+                                    a(href="#profile")
+                                        | Мой профиль
+                                li
+                                    a(href="#mytasks")
+                                        | Мои задачи
+                                li
+                                    a(href="#alltasks")
+                                        | Все задачи
+                            ul(class="nav navbar-nav navbar-right")
+                                li
+                                    a(href="" id='changepasswordlink')
+                                        | Сменить пароль
+                                li
+                                    a(href="/logout")
+                                        | Выйти
+    br
+    br
+    div(data-spy="scroll" data-target=".navbar-example")
+        div(class="navbar-example container" id="profile")
+            .row
+                .col-md-12
+                    br
+                    br
+                    h2.text-center Личные данные
+        .container
+            .row
+                .col-md-4.col-sm-12
+                    div.foravatar
+                        form(method="post" action="" enctype="multipart/data")
+                            label(for="ava" class='center-block')
+                                img(src="/images/no-avatar_jpg.jpg")
+                            input(type="file" id="ava" name="ava")
+                            input(type="submit" value="Сменить фото" class="btn btn-info center-block")
+
+                .col-md-4.col-sm-12
+                    div.password.form-group
+                        form(id="change-password" enctype="multipart/form-data")
+                            label(for="oldpassword") Старый пароль:
+                            br
+                            input(type="password" class="form-control" name="oldpassword" id="oldpassword")
+                            label(for="password") Пароль:
+                            br
+                            input(type="password" class="form-control" name="password" id="password")
+                            label(for="confirmpassword") Повторите пароль:
+                            br
+                            input(type="password" class="form-control" name="confirmpassword" id="confirmpassword")
+                            button(class="btn btn-info btn-block" type="submit")
+                                i(class="fa fa-check" aria-hidden="true")
+                                    | &nbsp; Сохранить
+                            br
+                            button(class="btn btn-danger btn-block" id="dismiss")
+                                i(class="fa fa-check" aria-hidden="true")
+                                    | &nbsp; Отменить
+                    h3
+                        | Имя: Name
+                    h3
+                        | Фамилия: Surname
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true")
+                            | &nbsp; Редактировать
+                    h2.text-center
+                        | Контакты
+                    h2
+                        small
+                            | Е-мейл: email@gmail.com
+                        br
+                        small
+                            | Телефон: +380950800555
+                        br
+                        small
+                            | Skype: skype_skype
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true")
+                            | &nbsp; Редактировать
+
+        br
+        br
+        br
+        br
+        br
+        br
+        br
+        div(class="navbar-example container" id="mytasks")
+            .row
+                .col-md-12.col-sm-12
+                    br
+                    br
+                    h2.text-center Мои задачи
+                    table.table.table-bordered
+                        thead
+                            td Название задачи
+                            td Приоритет
+                            td Статус
+                            td id
+                            td Дата создания
+                        if personaltask
+                            each task in personaltask
+                                tr
+                                    td #{task.name}
+                                    td #{task.priority}
+                                    td #{task.status}
+                                    td #{task.id}
+                                    td #{performDate(task.dateOfcreation)}
+                        else
+                            tr
+                                td Задач пока нет
+                                td -
+                                td -
+                                td -
+                                td -
+        div(class="navbar-example container" id="alltasks")
+            .row
+                .col-md-12.col-sm-12
+                    br
+                    br
+                    h2.text-center Все задачи
+                    table.table.table-bordered
+                        thead
+                            td Исполнитель
+                            td Название задачи
+                            td Приоритет
+                            td Статус
+                            td id
+                            td Дата создания
+                        if alltask
+                            each task in alltask
+                                tr
+                                    td #{task.executant}
+                                    td
+                                        a(href="/task/" + task._id) #{task.name}
+                                    td #{task.priority}
+                                    td #{task.status}
+                                    td #{task.id}
+                                    td #{performDate(task.dateOfcreation)}
+                        else
+                            tr
+                                td Задач пока нет
+                                td -
+                                td -
+                                td -
+                                td -
+                                td -
+
+
+    script.
+        $(document).ready(function () {
+            $("#change-password").on('submit', function (form) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-password",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
+                })
+                    .done(function () {
+                        alertify.success("Пароль изменен!");
+                    })
+                    .fail(function () {
+                        alertify.error("Пароль не изменен!");
+                    })
+                    .always(function () {
+                        $("#change-password").css("display", "none");
+                    });
+                form.preventDefault();
+            })
+            $("body").css("padding", "0px");
+            $("changepasswordlink").on('click', function () {
+                $("#change-password").css("display", "block");
+            });
+            $("dismiss").on('click', function () {
+                $("#change-password").css("display", "none");
+            })
+        });

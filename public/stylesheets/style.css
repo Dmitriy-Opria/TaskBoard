@@ -55,3 +55,56 @@ a {
   display: inline-block !important;
   margin: 15px;
 }
+.has-error .form-control {
+  border-color: #d44937;
+}
+.has-error .checkbox,
+.has-error .checkbox-inline,
+.has-error .control-label,
+.has-error .form-control-feedback,
+.has-error .help-block,
+.has-error .radio,
+.has-error .radio-inline,
+.has-error.checkbox label,
+.has-error.checkbox-inline label,
+.has-error.radio label,
+.has-error.radio-inline label {
+  color: #d44937;
+}
+#ava {
+  display: none;
+}
+
+.foravatar label {
+  cursor: pointer;
+  width: 300px;
+  height: 300px;
+}
+
+.foravatar img{
+  width: 300px;
+  height: 300px;
+  border: 2px solid black;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+.avatar{
+  width: 50px;
+  height: 50px;
+  border: 2px solid #E6E6E6;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.avatar img{
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin:0 auto;
+}
+dt, kbd kbd, label {
+  font-weight: 400;
+}
+

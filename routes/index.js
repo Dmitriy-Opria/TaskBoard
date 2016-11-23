@@ -19,6 +19,34 @@ router.get('/registerpage', function (req, res) {
     "use strict";
     res.render('register');
 });
+router.get('/personalarea', function (req, res) {
+    "use strict";
+    if (req.session.user) {
+        Task.find({}, function (err, alltask) {
+            if (err) {
+                console.error(err);
+                res.statusCode(500);
+            }
+            else{
+                console.log(alltask);
+                User.find({}, function (err, personaltask) {
+                    if (err) {
+                        console.error(err);
+                        res.statusCode(500);
+                    }
+                    else {
+                        res.render('personalarea',{personaltask : personaltask.tasks,
+                            alltask : alltask });
+                    }
+                });
+            }
+        });
+
+    }
+    else {
+        res.redirect("/");
+    }
+});
 router.post('/registerme', function (req, res) {
     "use strict";
     req.check('username','Длина имени должна быть 4-12 символов').isLength({min : 4, max : 12});
@@ -69,7 +97,7 @@ router.get('/board', function (req, res) {
                 res.statusCode(500);
             }
             else {
-                res.render('index', {tasks: tasks});
+                res.render('index', {tasks: tasks, username : req.session.user.name});
             }
         });
     }
@@ -150,6 +178,40 @@ router.post('/change-state', function (req, res) {
         });
     });
 });
+router.post('/change-password', function (req, res) {
+    req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
+    req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
+
+    var errors = req.validationErrors();
+    if (req.session.user.password === req.body.oldpassword) {
+        if (!errors) {
+            User.findByIdAndUpdate(req.body.id, {
+                    $set: {
+                        password: req.body.password
+                    }
+                },
+                {new: true},
+                function (err) {
+                    if (err) {
+                        console.error(err);
+                        res.statusCode(500);
+                    }
+
+                });
+        }
+        else{
+            console.log(errors.msg);
+        }
+
+    }
+    else{
+        console.log("wrong old password");
+        console.log(req.session.user.password);
+        console.log(req);
+        res.statusCode(500);
+    }
+});
+
 router.get('/task/:id', function (req, res, next) {
 
     Task.findById(req.params.id, function (err, doc) {

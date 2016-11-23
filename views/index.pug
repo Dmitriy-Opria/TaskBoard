@@ -4,7 +4,11 @@ block content
     .container-fluid
         .expanded.row
             button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            button.btn.btn-danger.pull-right(type='button', onclick="fireLogout()") выйти
+            div.pull-right
+                div.avatar
+                    a(href="/personalarea")
+                        img(src="/images/no-avatar_jpg.jpg")
+                p #{username}
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
