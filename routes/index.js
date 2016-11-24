@@ -179,15 +179,13 @@ router.post('/change-state', function (req, res) {
     });
 });
 router.post('/change-password', function (req, res) {
-    console.log(req.session.user.password);
-    console.log(req.body);
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
 
     var errors = req.validationErrors();
     if (req.session.user.password === req.body.oldpassword) {
         if (!errors) {
-            User.findByIdAndUpdate(req.session.user.id, {
+            User.findByIdAndUpdate(req.session.user._id, {
                     $set: {
                         password: req.body.password
                     }
