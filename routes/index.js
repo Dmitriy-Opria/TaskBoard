@@ -179,13 +179,15 @@ router.post('/change-state', function (req, res) {
     });
 });
 router.post('/change-password', function (req, res) {
+    console.log(req.session.user.password);
+    console.log(req.body);
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
 
     var errors = req.validationErrors();
     if (req.session.user.password === req.body.oldpassword) {
         if (!errors) {
-            User.findByIdAndUpdate(req.body.id, {
+            User.findByIdAndUpdate(req.session.user.id, {
                     $set: {
                         password: req.body.password
                     }
@@ -200,14 +202,13 @@ router.post('/change-password', function (req, res) {
                 });
         }
         else{
-            console.log(errors.msg);
+            console.log(errors);
         }
 
     }
     else{
         console.log("wrong old password");
-        console.log(req.session.user.password);
-        console.log(req);
+
         res.statusCode(500);
     }
 });
