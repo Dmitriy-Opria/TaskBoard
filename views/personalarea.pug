@@ -27,7 +27,7 @@ block content
                                         | Все задачи
                             ul(class="nav navbar-nav navbar-right")
                                 li
-                                    a(href="" id='changepasswordlink')
+                                    a(href="#" id='changepasswordlink')
                                         | Сменить пароль
                                 li
                                     a(href="/logout")
@@ -39,7 +39,6 @@ block content
             .col-md-12
                 br
                 br
-                h2.text-center Личные данные
     .container
         .row
             .col-md-4.col-sm-12
@@ -52,6 +51,7 @@ block content
 
             .col-md-4.col-sm-12
                 div.password.form-group
+                    h2.text-center Смена пароля
                     form(id="form" action="/change-password" method="post")
                         label(for="oldpassword") Старый пароль:
                         input(type="password" class="form-control" name="oldpassword" id="oldpassword")
@@ -59,34 +59,83 @@ block content
                         input(type="password" class="form-control" name="password" id="password")
                         label(for="confirmpassword") Повторите пароль:
                         input(type="password" class="form-control" name="confirmpassword" id="confirmpassword")
-                        button(type="submit" class="btn btn-info btn-block")
+                        button(type="submit" class="btn btn-info btn-block" id="sendpassword")
                             i(class="fa fa-check" aria-hidden="true")
                                 | &nbsp; Сохранить
-                        br
-                        button(class="btn btn-danger btn-block" id="dismiss")
+
+                        button(type="reset" class="btn btn-danger btn-block" id="dismiss")
                             i(class="fa fa-times" aria-hidden="true")
                                 | &nbsp; Отменить
-                h3
-                    | Имя: Name
-                h3
-                    | Фамилия: Surname
-                a(href='#')
-                    i(class="fa fa-pencil" aria-hidden="true")
-                        | &nbsp; Редактировать
+                h2.text-center Личные данные
+                div.info
+                    h3
+                        if person.name
+                            | Имя: #{person.name}
+                        else
+                            | Имя: -
+                    h3
+                        if person.surname
+                            | Фамилия: #{person.surname}
+                        else
+                            | Фамилия: -
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true" id="changeinfo")
+                            | &nbsp; Редактировать
+                .forminfo
+                    form(id="info" action="/change-info" method="post")
+                        .form-group
+                            label(for="formname") Имя:
+                            input(type="text" class="form-control" name="name" id="formname")
+                        .form-group
+                            label(for="forsurname") Фамилия:
+                            input(type="text" class="form-control" name="surname" id="forsurname")
+                        button(type="submit" class="btn btn-info btn-block" id="sendinfo")
+                            i(class="fa fa-check" aria-hidden="true")
+                                | &nbsp; Сохранить
+                        button(type="reset" class="btn btn-danger btn-block" id="dismissinfo")
+                            i(class="fa fa-times" aria-hidden="true")
+                                | &nbsp; Отменить
                 h2.text-center
                     | Контакты
-                h2
-                    small
-                        | Е-мейл: email@gmail.com
-                    br
-                    small
-                        | Телефон: +380950800555
-                    br
-                    small
-                        | Skype: skype_skype
-                a(href='#')
-                    i(class="fa fa-pencil" aria-hidden="true")
-                        | &nbsp; Редактировать
+                div.contacts
+                    h2
+                        small
+                            if person.email
+                                | Е-мейл: #{person.email}
+                            else
+                                | Е-мейл: -
+                        br
+                        small
+                            if person.tel
+                                | Телефон: #{person.tel}
+                            else
+                                | Телефон: -
+                        br
+                        small
+                            if person.skype
+                                | Skype: #{person.skype}
+                            else
+                                | Skype: -
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true" id="changecontacts")
+                            | &nbsp; Редактировать
+                .formcontacts
+                    form(id="cont" action="/change-contacts" method="post")
+                        .form-group
+                            label(for="contemail") Е-мейл:
+                            input(type="text" class="form-control" name="contemail" id="contemail")
+                        .form-group
+                            label(for="conttel") Тел:
+                            input(type="text" class="form-control" name="conttel" id="conttel")
+                        .form-group
+                            label(for="skype") Skype:
+                            input(type="text" class="form-control" name="skype" id="skype")
+                        button(type="submit" class="btn btn-info btn-block" id="sendcontacts")
+                            i(class="fa fa-check" aria-hidden="true")
+                                | &nbsp; Сохранить
+                        button(type="reset" class="btn btn-danger btn-block" id="dismisscontacts")
+                            i(class="fa fa-times" aria-hidden="true")
+                                | &nbsp; Отменить
 
     br
     br
@@ -108,8 +157,8 @@ block content
                         td Статус
                         td id
                         td Дата создания
-                    if personaltask
-                        each task in personaltask
+                    if person.tasks
+                        each task in person.tasks
                             tr
                                 td #{task.name}
                                 td #{task.priority}
@@ -175,15 +224,61 @@ block content
                         alertify.error("Пароль не изменен!");
                     })
                     .always(function () {
-                        $("#change-password").css("display", "none");
                     });
                 form.preventDefault();
             })
             $("body").css("padding", "0px");
-            $("changepasswordlink").on('click', function () {
-                $("#change-password").css("display", "block");
+            //Form to change password
+            $(".password").css("display", "none");
+            var counter = 1;
+            $("#changepasswordlink, #sendpassword,#dismiss").on('click', function () {
+                counter++;
+                display();
             });
-            $("dismiss").on('click', function () {
-                $("#change-password").css("display", "none");
-            })
+            function display() {
+                if (counter % 2 == 0) {
+                    $(".password").css("display", "block");
+                    console.log(counter);
+                }
+                else {
+                    $(".password").css("display", "none");
+                }
+            }
+
+            //Form to change personal information
+            $(".forminfo").css("display", "none");
+            var infCounter = 1;
+            $("#changeinfo, #sendinfo,#dismissinfo").on('click', function () {
+                infCounter++;
+                infDisplay();
+            });
+            function infDisplay() {
+                if (infCounter % 2 == 0) {
+                    $(".forminfo").css("display", "block");
+                    $(".info").css("display", "none");
+                }
+                else {
+                    $(".forminfo").css("display", "none");
+                    $(".info").css("display", "block");
+                }
+            }
+
+            //Form to change contacts
+            $(".formcontacts").css("display", "none");
+            var contCounter = 1;
+            $("#changecontacts, #sendcontacts,#dismisscontacts").on('click', function () {
+                contCounter++;
+                contDisplay();
+            });
+            function contDisplay() {
+                if (contCounter % 2 == 0) {
+                    $(".formcontacts").css("display", "block");
+                    $(".contacts").css("display", "none");
+                }
+                else {
+                    $(".formcontacts").css("display", "none");
+                    $(".contacts").css("display", "block");
+                }
+            }
+
         });

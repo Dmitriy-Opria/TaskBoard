@@ -22,6 +22,8 @@ var UserModel = new Schema({
     surname: String,
     avatar:{ type: String, default: '/images/no-avatar_jpg.jpg' },
     email:  String,
+    tel: String,
+    skype: String,
     password: String,
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });

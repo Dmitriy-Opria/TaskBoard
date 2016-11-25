@@ -29,13 +29,13 @@ router.get('/personalarea', function (req, res) {
             }
             else{
                 console.log(alltask);
-                User.find({}, function (err, personaltask) {
+                User.findById(req.session.user._id, function (err, person) {
                     if (err) {
                         console.error(err);
                         res.statusCode(500);
                     }
                     else {
-                        res.render('personalarea',{personaltask : personaltask.tasks,
+                        res.render('personalarea',{person : person,
                             alltask : alltask });
                     }
                 });
@@ -209,6 +209,59 @@ router.post('/change-password', function (req, res) {
 
         res.statusCode(500);
     }
+});
+router.post('/change-info', function (req, res) {
+    User.findByIdAndUpdate(req.session.user._id, {
+            $set: {
+                name: req.body.name,
+                surname: req.body.surname
+            }
+        },
+        {new: true},
+        function (err) {
+            if (err) {
+                console.error(err);
+            }
+            else {
+                User.findById(req.session.user._id, function (err, person) {
+                    if (err) {
+                        console.error(err);
+                        res.statusCode(500);
+                    }
+                    else {
+                        res.redirect('/personalarea');
+                    }
+                });
+            }
+        });
+});
+router.post('/change-contacts', function (req, res) {
+
+    console.log(req.body);
+    User.findByIdAndUpdate(req.session.user._id, {
+            $set: {
+                email: req.body.contemail,
+                tel: req.body.conttel,
+                skype: req.body.skype
+            }
+        },
+        {new: true},
+        function (err) {
+            if (err) {
+                console.error(err);
+            }
+            else {
+                User.findById(req.session.user._id, function (err, person) {
+                    if (err) {
+                        console.error(err);
+                        res.statusCode(500);
+                    }
+                    else {
+                        res.redirect('/personalarea');
+                    }
+                });
+            }
+        });
 });
 
 router.get('/task/:id', function (req, res, next) {
