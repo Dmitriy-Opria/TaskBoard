@@ -208,13 +208,12 @@ block content
     script.
         $(document).ready(function () {
             var changepassword = $('#changepassword');
-            $("#changepassword").on('submit', function (form) {
+            $("#form").on('submit', function (e) {
                 $.ajax({
                     method: "POST",
                     url: "/change-password",
-                    data: changepassword.serialize(),
-                    processData: false,
-                    contentType: false
+                    data: $(this).serialize(),
+                    processData: false
                 })
                     .done(function () {
                         alertify.success("Пароль изменен!");
@@ -224,7 +223,7 @@ block content
                     })
                     .always(function () {
                     });
-                form.preventDefault();
+                e.preventDefault();
             })
             $("body").css("padding", "0px");
             //Form to change password
