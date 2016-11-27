@@ -43,7 +43,7 @@ block content
         .row
             .col-md-4.col-sm-12
                 div.foravatar
-                    form(method="post" action="" enctype="multipart/data")
+                    form(method="post" action="/" enctype="multipart/data")
                         label(for="ava" class='center-block')
                             img(src="/images/no-avatar_jpg.jpg")
                         input(type="file" id="ava" name="ava")
@@ -62,8 +62,7 @@ block content
                         button(type="submit" class="btn btn-info btn-block" id="sendpassword")
                             i(class="fa fa-check" aria-hidden="true")
                                 | &nbsp; Сохранить
-
-                        button(type="reset" class="btn btn-danger btn-block" id="dismiss")
+                        button(type="reset" class="btn btn-warning btn-block" id="dismiss")
                             i(class="fa fa-times" aria-hidden="true")
                                 | &nbsp; Отменить
                 h2.text-center Личные данные
@@ -92,7 +91,7 @@ block content
                         button(type="submit" class="btn btn-info btn-block" id="sendinfo")
                             i(class="fa fa-check" aria-hidden="true")
                                 | &nbsp; Сохранить
-                        button(type="reset" class="btn btn-danger btn-block" id="dismissinfo")
+                        button(type="reset" class="btn btn-warning btn-block" id="dismissinfo")
                             i(class="fa fa-times" aria-hidden="true")
                                 | &nbsp; Отменить
                 h2.text-center
@@ -133,7 +132,7 @@ block content
                         button(type="submit" class="btn btn-info btn-block" id="sendcontacts")
                             i(class="fa fa-check" aria-hidden="true")
                                 | &nbsp; Сохранить
-                        button(type="reset" class="btn btn-danger btn-block" id="dismisscontacts")
+                        button(type="reset" class="btn btn-warning btn-block" id="dismisscontacts")
                             i(class="fa fa-times" aria-hidden="true")
                                 | &nbsp; Отменить
 
