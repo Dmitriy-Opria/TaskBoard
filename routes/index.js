@@ -194,7 +194,10 @@ router.post('/change-password', function (req, res) {
                 function (err) {
                     if (err) {
                         console.error(err);
-                        res.statusCode(500);
+                        res.sendStatus(500);
+                    }
+                    else{
+                        res.sendStatus(200);
                     }
 
                 });
@@ -207,7 +210,7 @@ router.post('/change-password', function (req, res) {
     else{
         console.log("wrong old password");
 
-        res.statusCode(500);
+        res.sendStatus(500);
     }
 });
 router.post('/change-info', function (req, res) {
