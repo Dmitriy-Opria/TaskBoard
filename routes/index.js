@@ -17,27 +17,25 @@ router.get('/', function (req, res) {
 });
 router.post('/login', function (req, res) {
     "use strict";
-    User.create({
-        name: req.body.username,
-        email: req.body.useremail,
-        password: req.body.userpassword
-    }, (err, savedObject) => {
+    User.findOne({'email': req.body.useremail}, function (err,person) {
+        if (err){
+            console.error(err);
+        }
+        else {
+            console.error(person);
+
+        }
+    });
+/*    req.session.user = savedObject;
+    req.session.save(function (err) {
         if (err) {
             console.error(err);
         }
         else {
-            req.session.user = savedObject;
-            req.session.save(function (err) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    console.log(savedObject);
-                    res.redirect("/board");
-                }
-            });
+            console.log(savedObject);
+            res.redirect("/board");
         }
-    })
+    });*/
 });
 router.get('/registerme', function (req, res) {
     "use strict";
