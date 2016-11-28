@@ -113,6 +113,7 @@ router.post('/logout', (req, res) => {
 });
 router.post('/create', upload.array('files', 4), function (req, res) {
     "use strict";
+
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
@@ -178,15 +179,15 @@ router.post('/change-state', function (req, res) {
         });
     });
 });
-/*
-router.post('/change-avatar', upload.array('files', 1),function (req, res, next) {
-    var filePath = 0;
-    console.log(req);
-    var original = req.body.ava;
+
+router.post('/change-avatar', upload.array('avatar', 1),function (req, res, next) {
+    var filePath = req.files[0].path;
+    var original = req.files[0].originalname;
+    console.log(req.files);
+    console.log(req.files[0].originalname);
     fs.readFile(filePath, function (err, content) {
         if(err){
             res.sendStatus(500);
-            console.log(req.files);
         }
         else {
             fs.writeFile(path.join(__dirname, '../public/images/avatars/')+ original, content, function (err) {
@@ -197,7 +198,7 @@ router.post('/change-avatar', upload.array('files', 1),function (req, res, next)
                 else {
                     User.findByIdAndUpdate(req.session.user._id, {
                             $set: {
-                                avatar: path.join(__dirname, '../public/images/avatars/')+ original,
+                                avatar: "images/avatars/" + original,
                             }
                         },
                         {new: true},
@@ -206,13 +207,13 @@ router.post('/change-avatar', upload.array('files', 1),function (req, res, next)
                                 console.error(err);
                             }
                             else {
-                                User.findById(req.session.user._id, function (err, avatar) {
+                                User.findById(req.session.user._id, function (err, person) {
                                     if (err) {
                                         console.error(err);
                                         res.statusCode(500);
                                     }
                                     else {
-                                        res.status(201).json({cont: avatar});
+                                        res.status(201).json({person: person.avatar});
                                     }
                                 });
                             }
@@ -222,7 +223,7 @@ router.post('/change-avatar', upload.array('files', 1),function (req, res, next)
         }
     })
 });
-*/
+
 router.post('/change-password', function (req, res) {
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);

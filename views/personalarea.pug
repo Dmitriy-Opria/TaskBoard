@@ -43,10 +43,13 @@ block content
         .row
             .col-md-4.col-sm-12
                 div.foravatar
-                    form(method="post" action="/change-avatar" enctype="multipart/data")
+                    form(id="formavatar" method="post" action="/change-avatar" enctype="multipart/form-data" multiple)
                         label(for="ava" class='center-block')
-                            img(src="/images/avatars/no-avatar_jpg.jpg")
-                        input(type="file" id="ava" name="ava" accept="image/jpeg,image/png,image/gif")
+                            if person.avatar
+                                img(src="/" + person.avatar)
+                            else
+                                img(src="/images/avatars/no-avatar_jpg.jpg")
+                        input(type="file" id="ava" name="avatar" accept="image/jpeg,image/png,image/gif")
                         input(type="submit" value="Сменить фото" class="btn btn-info center-block")
 
             .col-md-4.col-sm-12
@@ -206,6 +209,29 @@ block content
 
 
     script.
+        // AJAX for change avatar
+        $(document).ready(function () {
+            $("#formavatar").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-avatar",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                        .done(function (person) {
+                            //path.person
+                            $("#formavatar > img").attr("scr", person.person);
+                            console.log(person);
+                            console.log($("#formavatar > img"));
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                        });
+                e.preventDefault();
+            })
+        });
+
         // AJAX for change password
         $(document).ready(function () {
             var changepassword = $('#changepassword');
