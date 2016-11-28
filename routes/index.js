@@ -15,6 +15,34 @@ router.get('/', function (req, res) {
     "use strict";
     res.render('welcome');
 });
+router.post('/login', function (req, res) {
+    "use strict";
+    User.create({
+        name: req.body.username,
+        email: req.body.useremail,
+        password: req.body.userpassword
+    }, (err, savedObject) => {
+        if (err) {
+            console.error(err);
+        }
+        else {
+            req.session.user = savedObject;
+            req.session.save(function (err) {
+                if (err) {
+                    console.error(err);
+                }
+                else {
+                    console.log(savedObject);
+                    res.redirect("/board");
+                }
+            });
+        }
+    })
+});
+router.get('/registerme', function (req, res) {
+    "use strict";
+    res.render('Registerme');
+});
 router.post('/registerme', function (req, res) {
     "use strict";
     User.create({
