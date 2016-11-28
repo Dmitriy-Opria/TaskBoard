@@ -43,15 +43,16 @@ block content
         .row
             .col-md-4.col-sm-12
                 div.foravatar
+                    br
+                    br
                     form(id="formavatar" method="post" action="/change-avatar" enctype="multipart/form-data" multiple)
                         label(for="ava" class='center-block')
                             if person.avatar
-                                img(src="/" + person.avatar)
+                                img(id="img" src=person.avatar )
                             else
-                                img(src="/images/avatars/no-avatar_jpg.jpg")
+                                img(id="img" src="/images/avatars/no-avatar_jpg.jpg")
                         input(type="file" id="ava" name="avatar" accept="image/jpeg,image/png,image/gif")
                         input(type="submit" value="Сменить фото" class="btn btn-info center-block")
-
             .col-md-4.col-sm-12
                 div.password.form-group
                     h2.text-center Смена пароля
@@ -215,14 +216,13 @@ block content
                 $.ajax({
                     method: "POST",
                     url: "/change-avatar",
-                    data: $(this).serialize(),
-                    processData: false
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
                 })
                         .done(function (person) {
                             //path.person
-                            $("#formavatar > img").attr("scr", person.person);
-                            console.log(person);
-                            console.log($("#formavatar > img"));
+                            $("#img").attr("src", "/" + person.person);
                         })
                         .fail(function () {
                         })

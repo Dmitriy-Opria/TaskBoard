@@ -179,14 +179,15 @@ router.post('/change-state', function (req, res) {
         });
     });
 });
-
 router.post('/change-avatar', upload.array('avatar', 1),function (req, res, next) {
+
+    console.log(req);
+    console.log(req.files[0].originalname);
     var filePath = req.files[0].path;
     var original = req.files[0].originalname;
-    console.log(req.files);
-    console.log(req.files[0].originalname);
     fs.readFile(filePath, function (err, content) {
         if(err){
+            console.log(1);
             res.sendStatus(500);
         }
         else {
@@ -223,7 +224,6 @@ router.post('/change-avatar', upload.array('avatar', 1),function (req, res, next
         }
     })
 });
-
 router.post('/change-password', function (req, res) {
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
@@ -328,7 +328,6 @@ router.post('/change-contacts', function (req, res) {
     }
 
 });
-
 router.get('/task/:id', function (req, res, next) {
 
     Task.findById(req.params.id, function (err, doc) {
