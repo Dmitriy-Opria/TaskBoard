@@ -178,40 +178,94 @@ router.post('/change-state', function (req, res) {
         });
     });
 });
+/*
+router.post('/change-avatar', upload.array('files', 1),function (req, res, next) {
+    var filePath = 0;
+    console.log(req);
+    var original = req.body.ava;
+    fs.readFile(filePath, function (err, content) {
+        if(err){
+            res.sendStatus(500);
+            console.log(req.files);
+        }
+        else {
+            fs.writeFile(path.join(__dirname, '../public/images/avatars/')+ original, content, function (err) {
+                console.log(path.join(__dirname, '../public/images/avatars/') + original);
+                if(err){
+                    res.sendStatus(500);
+                }
+                else {
+                    User.findByIdAndUpdate(req.session.user._id, {
+                            $set: {
+                                avatar: path.join(__dirname, '../public/images/avatars/')+ original,
+                            }
+                        },
+                        {new: true},
+                        function (err) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            else {
+                                User.findById(req.session.user._id, function (err, avatar) {
+                                    if (err) {
+                                        console.error(err);
+                                        res.statusCode(500);
+                                    }
+                                    else {
+                                        res.status(201).json({cont: avatar});
+                                    }
+                                });
+                            }
+                        });
+                }
+            })
+        }
+    })
+});
+*/
 router.post('/change-password', function (req, res) {
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
 
     var errors = req.validationErrors();
-    if (req.session.user.password === req.body.oldpassword) {
-        if (!errors) {
-            User.findByIdAndUpdate(req.session.user._id, {
-                    $set: {
-                        password: req.body.password
-                    }
-                },
-                {new: true},
-                function (err) {
-                    if (err) {
-                        console.error(err);
-                        res.sendStatus(500);
-                    }
-                    else{
-                        res.sendStatus(200);
-                    }
-
-                });
+    User.findById(req.session.user._id, function (err, person) {
+        if (err) {
+            console.error(err);
+            res.status(500).json({errInfo: "Ошибка!"});
         }
-        else{
-            console.log(errors);
+        else {
+            if (person.password === req.body.oldpassword) {
+                if (!errors) {
+                    User.findByIdAndUpdate(req.session.user._id, {
+                            $set: {
+                                password: req.body.password
+                            }
+                        },
+                        {new: true},
+                        function (err) {
+                            if (err) {
+                                console.error(err);
+                                res.status(500).json({errInfo: "Ошибка!"});
+                            }
+                            else{
+                                res.sendStatus(200);
+                            }
+
+                        });
+                }
+                else{
+                    console.log("Have validation errors");
+                    res.status(500).json({errInfo: errors});
+                }
+
+            }
+            else{
+                console.log("wrong old password");
+                res.status(500).json({errInfo: "Неправильный пароль"});
+            }
         }
+    });
 
-    }
-    else{
-        console.log("wrong old password");
-
-        res.sendStatus(500);
-    }
 });
 router.post('/change-info', function (req, res) {
     User.findByIdAndUpdate(req.session.user._id, {
@@ -226,45 +280,52 @@ router.post('/change-info', function (req, res) {
                 console.error(err);
             }
             else {
-                User.findById(req.session.user._id, function (err, person) {
+                User.findById(req.session.user._id, function (err, info) {
                     if (err) {
                         console.error(err);
                         res.statusCode(500);
                     }
                     else {
-                        res.redirect('/personalarea');
+                        res.status(201).json({info: info});
                     }
                 });
             }
         });
 });
 router.post('/change-contacts', function (req, res) {
+    req.check('useremail','Неверный e-mail').isEmail();
 
-    console.log(req.body);
-    User.findByIdAndUpdate(req.session.user._id, {
-            $set: {
-                email: req.body.contemail,
-                tel: req.body.conttel,
-                skype: req.body.skype
-            }
-        },
-        {new: true},
-        function (err) {
-            if (err) {
-                console.error(err);
-            }
-            else {
-                User.findById(req.session.user._id, function (err, person) {
-                    if (err) {
-                        console.error(err);
-                        res.statusCode(500);
-                    }
-                    else {
-                        res.redirect('/personalarea');
-                    }
-                });
-            }
-        });
+    var errors = req.validationErrors();
+    if(!errors){
+        User.findByIdAndUpdate(req.session.user._id, {
+                $set: {
+                    email: req.body.contemail,
+                    tel: req.body.conttel,
+                    skype: req.body.skype
+                }
+            },
+            {new: true},
+            function (err) {
+                if (err) {
+                    console.error(err);
+                }
+                else {
+                    User.findById(req.session.user._id, function (err, cont) {
+                        if (err) {
+                            console.error(err);
+                            res.statusCode(500);
+                        }
+                        else {
+                            res.status(201).json({cont: cont});
+                        }
+                    });
+                }
+            });
+    }
+    else{
+        res.status(500).json({errInfo: errors});
+    }
+
 });
 
 router.get('/task/:id', function (req, res, next) {

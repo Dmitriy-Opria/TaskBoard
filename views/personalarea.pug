@@ -43,10 +43,10 @@ block content
         .row
             .col-md-4.col-sm-12
                 div.foravatar
-                    form(method="post" action="/" enctype="multipart/data")
+                    form(method="post" action="/change-avatar" enctype="multipart/data")
                         label(for="ava" class='center-block')
-                            img(src="/images/no-avatar_jpg.jpg")
-                        input(type="file" id="ava" name="ava")
+                            img(src="/images/avatars/no-avatar_jpg.jpg")
+                        input(type="file" id="ava" name="ava" accept="image/jpeg,image/png,image/gif")
                         input(type="submit" value="Сменить фото" class="btn btn-info center-block")
 
             .col-md-4.col-sm-12
@@ -67,12 +67,12 @@ block content
                                 | &nbsp; Отменить
                 h2.text-center Личные данные
                 div.info
-                    h3
+                    h3#name
                         if person.name
                             | Имя: #{person.name}
                         else
                             | Имя: -
-                    h3
+                    h3#surname
                         if person.surname
                             | Фамилия: #{person.surname}
                         else
@@ -98,19 +98,19 @@ block content
                     | Контакты
                 div.contacts
                     h2
-                        small
+                        small#email
                             if person.email
                                 | Е-мейл: #{person.email}
                             else
                                 | Е-мейл: -
                         br
-                        small
+                        small#tel
                             if person.tel
                                 | Телефон: #{person.tel}
                             else
                                 | Телефон: -
                         br
-                        small
+                        small#skypee
                             if person.skype
                                 | Skype: #{person.skype}
                             else
@@ -206,6 +206,7 @@ block content
 
 
     script.
+        // AJAX for change password
         $(document).ready(function () {
             var changepassword = $('#changepassword');
             $("#form").on('submit', function (e) {
@@ -218,18 +219,68 @@ block content
                     .done(function () {
                         alertify.success("Пароль изменен!");
                     })
-                    .fail(function () {
-                        alertify.error("Пароль не изменен!");
+                    .fail(function (errInfo) {
+                        if(errInfo.responseJSON.errInfo[0].msg) {
+                            alertify.error(errInfo.responseJSON.errInfo[0].msg);
+                        }
+                        else{
+                            alertify.error(errInfo.responseJSON.errInfo);
+                        }
                     })
                     .always(function () {
                     });
                 e.preventDefault();
             })
+
+        // AJAX for change personal information
+            $("#info").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-info",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                    .done(function (info) {
+                        console.log(info);
+                        $('#name').text("Имя: " + info.info.name);
+                        $('#surname').text("Фамилия: " + info.info.surname);
+                        alertify.success("Имя изменено!");
+                    })
+                    .fail(function () {
+                        alertify.error("Ошибка!");
+                    })
+                    .always(function () {
+                    });
+                e.preventDefault();
+            })
+
+            // AJAX for change contact information
+            $("#cont").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-contacts",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                    .done(function (cont) {
+                        $('#email').text("Е-мейл: " + cont.cont.email);
+                        $('#tel').text("Телефон: " + cont.cont.tel);
+                        $('#skypee').text("Skype " + cont.cont.skype);
+                        alertify.success("Контакты изменены!");
+                    })
+                    .fail(function (errInfo) {
+                        alertify.error(errInfo.responseJSON.errInfo[0].msg);
+                    })
+                    .always(function () {
+                    });
+                e.preventDefault();
+            })
+
             $("body").css("padding", "0px");
             //Form to change password
             $(".password").css("display", "none");
             var counter = 1;
-            $("#changepasswordlink, #sendpassword,#dismiss").on('click', function () {
+            $("#changepasswordlink, #sendpassword, #dismiss").on('click', function () {
                 counter++;
                 display();
             });

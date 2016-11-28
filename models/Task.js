@@ -20,10 +20,10 @@ var TaskModel = new Schema({
 var UserModel = new Schema({
     name:  String,
     surname: String,
-    avatar:{ type: String, default: '/images/no-avatar_jpg.jpg' },
+    avatar:{ type: String, default: '/images/avatars/no-avatar_jpg.jpg' },
     email:  String,
-    tel: String,
-    skype: String,
+    tel: { type: String, default: '-'},
+    skype: { type: String, default: '-'},
     password: String,
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });
