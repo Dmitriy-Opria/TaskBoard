@@ -101,12 +101,12 @@ block content
                             option(value='высокий') высокий
                             option(value='критичный') критичный
                 .modal-footer
-                    button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
+                    button.btn.btn-info(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
-            height: 500,
+            height: 250,
             theme: 'modern',
             plugins: [
                 'advlist autolink lists link image charmap print preview hr anchor pagebreak',

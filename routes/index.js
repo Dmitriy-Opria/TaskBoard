@@ -294,7 +294,7 @@ router.post('/change-info', function (req, res) {
         });
 });
 router.post('/change-contacts', function (req, res) {
-    req.check('useremail','Неверный e-mail').isEmail();
+    req.check('contemail','Неверный e-mail').isEmail();
 
     var errors = req.validationErrors();
     if(!errors){
@@ -338,9 +338,22 @@ router.get('/task/:id', function (req, res, next) {
 router.post("/remove", function (req, res) {
     "use strict";
     if (!req.body.id) res.sendStatus(400);
-    Task.remove({_id: req.body.id}, function (err) {
-        if (err) res.sendStatus(500);
-        res.sendStatus(200);
+    Task.findById(req.body.id, function (err, doc) {
+        var filesArray = doc.images;
+        for (var i = 0; i < filesArray.length; i++) {
+            fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
+                if (err) res.sendStatus(500);
+            });
+        }
+        Task.remove({_id: req.body.id}, function (err) {
+            if (err) {
+                res.sendStatus(500);
+            }
+            else {
+                res.sendStatus(200);
+            }
+        })
+
     });
 });
 
