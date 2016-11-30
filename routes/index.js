@@ -55,6 +55,7 @@ router.post('/registerme', function (req, res) {
     req.check('confirmpassword','Пароли не совпадают').equals(req.body.userpassword);
 
     var errors = req.validationErrors();
+
     if(errors){
         res.render('register',{errors : errors,
                                 username : req.body.username,
@@ -63,27 +64,42 @@ router.post('/registerme', function (req, res) {
                                 confirmpassword : req.body.confirmpassword});
     }
     else {
-        User.create({
-            name: req.body.username,
-            email: req.body.useremail,
-            password: req.body.userpassword
-        }, (err, savedObject) => {
-            if (err) {
-                console.error(err);
+        User.findByEmail(req.body.email, (error, user)=>{
+            if(user){
+                let errors={}
+                    errors.msg = "Пользователь с таким е-мейл уже существует";
+                    errors.param = "useremail";
+                res.render('register',{errors :errors,
+                    username : req.body.username,
+                    useremail : req.body.useremail,
+                    userpassword :req.body.userpassword,
+                    confirmpassword : req.body.confirmpassword});
             }
-            else {
-                req.session.user = savedObject;
-                req.session.save(function (err) {
+            else{
+                User.create({
+                    name: req.body.username,
+                    email: req.body.useremail,
+                    password: req.body.userpassword
+                }, (err, savedObject) => {
                     if (err) {
                         console.error(err);
                     }
                     else {
-                        console.log(savedObject);
-                        res.redirect("/board");
+                        req.session.user = savedObject;
+                        req.session.save(function (err) {
+                            if (err) {
+                                console.error(err);
+                            }
+                            else {
+                                console.log(savedObject);
+                                res.redirect("/board");
+                            }
+                        });
                     }
-                });
+                })
             }
         })
+
     }
 });
 
@@ -105,27 +121,28 @@ router.get('/board', function (req, res) {
         res.redirect("/");
     }
 });
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
     "use strict";
     // req.logout();
     delete req.session.user;
-    res.sendStatus(200).end();
+    res.redirect("/");
 });
 router.post('/create', upload.array('files', 4), function (req, res) {
     "use strict";
-
+    var date = Date.now();
+    console.log(req.body);
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
             arrayOfTask.push((callback) => {
                 fs.readFile(elem.path, (err, content) => {
                     if (!err) {
-                        fs.writeFile(path.join(__dirname, '../public/images/') + elem.originalname, content, (err) => {
+                        fs.writeFile(path.join(__dirname, '../public/images/') + date + "_" + elem.originalname , content, (err) => {
                             if (err) {
                                 callback(err, null);
                             }
                             else {
-                                callback(null, "images/" + elem.originalname);
+                                callback(null, "images/" + date + "_" + elem.originalname);
                             }
                         })
                     }

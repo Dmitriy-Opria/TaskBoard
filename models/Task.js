@@ -28,6 +28,9 @@ var UserModel = new Schema({
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });
 
+UserModel.statics.findByEmail = function(email, cb) {
+    return this.find({ email: email }, cb);
+};
 var connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
 
 var Task = connection.model('Task', TaskModel),
