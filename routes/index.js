@@ -24,7 +24,7 @@ router.get('/login',(req, res)=>{
         res.render("loginform");
     }
 });
-router.get('/regiter', (req,res)=>{
+router.get('/register', (req,res)=>{
     "use strict";
     res.render("registerform");
 });
@@ -46,7 +46,7 @@ router.post('/registerme', function (req, res) {
                 }
                 else {
                     console.log(savedObject);
-                    res.redirect("/board");
+                    res.redirect("/profile");
                 }
             });
         }

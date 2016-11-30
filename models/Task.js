@@ -38,7 +38,8 @@ const ProjectModel = new Schema({
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
 
 const Task = connection.model('Task', TaskModel),
-    User = connection.model('User', UserModel);
-    Project = connection.model('User', ProjectModel);
+    User = connection.model('User', UserModel),
+    Project = connection.model('Project', ProjectModel);
 module.exports.Task = Task;
 module.exports.User = User;
+module.exports.Project = Project;
