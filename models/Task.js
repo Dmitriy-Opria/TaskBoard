@@ -18,22 +18,21 @@ const TaskModel = new Schema({
  * Created by alexey-home on 16.11.16.
  */
 
-const UserModel = new Schema({
+var UserModel = new Schema({
     name:  String,
     surname: String,
-    avatar:{ type: String, default: '/images/no-avatar_jpg.jpg' },
+    avatar:{ type: String, default: '/images/avatars/no-avatar_jpg.jpg' },
     email:  String,
+    tel: { type: String, default: '-'},
+    skype: { type: String, default: '-'},
     password: String,
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });
 
-const ProjectModel = new Schema({
-    name:  String,
-    cover: { type: String, default: '/images/dc.png' },
-    dateOfcreation:  { type: Date, default: Date.now },
-    description:  String,
-    tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
-});
+UserModel.statics.findByEmail = function(email, cb) {
+    return this.find({ email: email }, cb);
+};
+var connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
 
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
 

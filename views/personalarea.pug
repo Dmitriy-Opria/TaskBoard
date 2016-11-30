@@ -1,0 +1,359 @@
+extends layout
+block content
+    .container
+        .row
+            .col-md-12.col-sm-12
+                nav(class="navbar navbar-default navbar-fixed-top")
+                    div(class="container-fluid")
+                        div(class="navbar-header")
+                            button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
+                                span(class="sr-only")
+                                    | Toggle navigation
+                                span(class="icon-bar")
+                                span(class="icon-bar")
+                                span(class="icon-bar")
+                            a(class="navbar-brand" href="/board")
+                                | TaskBoard.ua
+                        div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+                            ul(class="nav navbar-nav")
+                                li
+                                    a(href="#profile")
+                                        | Мой профиль
+                                li
+                                    a(href="#mytasks")
+                                        | Мои задачи
+                                li
+                                    a(href="#alltasks")
+                                        | Все задачи
+                            ul(class="nav navbar-nav navbar-right")
+                                li
+                                    a(href="#" id='changepasswordlink')
+                                        | Сменить пароль
+                                li
+                                    a(href="/logout")
+                                        | Выйти
+    br
+    br
+    .container#profile
+        .row
+            .col-md-12
+                br
+                br
+    .container
+        .row
+            .col-md-4.col-sm-12
+                div.foravatar
+                    br
+                    br
+                    form(id="formavatar" method="post" action="/change-avatar" enctype="multipart/form-data" multiple)
+                        label(for="ava" class='center-block')
+                            if person.avatar
+                                img(id="img" src=person.avatar )
+                            else
+                                img(id="img" src="/images/avatars/no-avatar_jpg.jpg")
+                        input(type="file" id="ava" name="avatar" accept="image/jpeg,image/png,image/gif")
+                        input(type="submit" value="Сменить фото" class="btn btn-info center-block")
+            .col-md-4.col-sm-12
+                div.password.form-group
+                    h2.text-center Смена пароля
+                    form(id="form" action="/change-password" method="post")
+                        label(for="oldpassword") Старый пароль:
+                        input(type="password" class="form-control" name="oldpassword" id="oldpassword")
+                        label(for="password") Пароль:
+                        input(type="password" class="form-control" name="password" id="password")
+                        label(for="confirmpassword") Повторите пароль:
+                        input(type="password" class="form-control" name="confirmpassword" id="confirmpassword")
+                        button(type="submit" class="btn btn-info btn-block" id="sendpassword")
+                            i(class="fa fa-check" aria-hidden="true")
+                                | &nbsp; Сохранить
+                        button(type="reset" class="btn btn-warning btn-block" id="dismiss")
+                            i(class="fa fa-times" aria-hidden="true")
+                                | &nbsp; Отменить
+                h2.text-center Личные данные
+                div.info
+                    h3#name
+                        if person.name
+                            | Имя: #{person.name}
+                        else
+                            | Имя: -
+                    h3#surname
+                        if person.surname
+                            | Фамилия: #{person.surname}
+                        else
+                            | Фамилия: -
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true" id="changeinfo")
+                            | &nbsp; Редактировать
+                .forminfo
+                    form(id="info" action="/change-info" method="post")
+                        .form-group
+                            label(for="formname") Имя:
+                            input(type="text" class="form-control" name="name" id="formname")
+                        .form-group
+                            label(for="forsurname") Фамилия:
+                            input(type="text" class="form-control" name="surname" id="forsurname")
+                        button(type="submit" class="btn btn-info btn-block" id="sendinfo")
+                            i(class="fa fa-check" aria-hidden="true")
+                                | &nbsp; Сохранить
+                        button(type="reset" class="btn btn-warning btn-block" id="dismissinfo")
+                            i(class="fa fa-times" aria-hidden="true")
+                                | &nbsp; Отменить
+                h2.text-center
+                    | Контакты
+                div.contacts
+                    h2
+                        small#email
+                            if person.email
+                                | Е-мейл: #{person.email}
+                            else
+                                | Е-мейл: -
+                        br
+                        small#tel
+                            if person.tel
+                                | Телефон: #{person.tel}
+                            else
+                                | Телефон: -
+                        br
+                        small#skypee
+                            if person.skype
+                                | Skype: #{person.skype}
+                            else
+                                | Skype: -
+                    a(href='#')
+                        i(class="fa fa-pencil" aria-hidden="true" id="changecontacts")
+                            | &nbsp; Редактировать
+                .formcontacts
+                    form(id="cont" action="/change-contacts" method="post")
+                        .form-group
+                            label(for="contemail") Е-мейл:
+                            input(type="text" class="form-control" name="contemail" id="contemail")
+                        .form-group
+                            label(for="conttel") Тел:
+                            input(type="text" class="form-control" name="conttel" id="conttel")
+                        .form-group
+                            label(for="skype") Skype:
+                            input(type="text" class="form-control" name="skype" id="skype")
+                        button(type="submit" class="btn btn-info btn-block" id="sendcontacts")
+                            i(class="fa fa-check" aria-hidden="true")
+                                | &nbsp; Сохранить
+                        button(type="reset" class="btn btn-warning btn-block" id="dismisscontacts")
+                            i(class="fa fa-times" aria-hidden="true")
+                                | &nbsp; Отменить
+
+    br
+    br
+    br
+    br
+    br
+    br
+    br
+    div(class="navbar-example container" id="mytasks")
+        .row
+            .col-md-12.col-sm-12
+                br
+                br
+                h2.text-center Мои задачи
+                table.table.table-bordered
+                    thead
+                        td Название задачи
+                        td Приоритет
+                        td Статус
+                        td id
+                        td Дата создания
+                    if person.tasks
+                        each task in person.tasks
+                            tr
+                                td #{task.name}
+                                td #{task.priority}
+                                td #{task.status}
+                                td #{task.id}
+                                td #{performDate(task.dateOfcreation)}
+                    else
+                        tr
+                            td Задач пока нет
+                            td -
+                            td -
+                            td -
+                            td -
+    div(class="navbar-example container" id="alltasks")
+        .row
+            .col-md-12.col-sm-12
+                br
+                br
+                h2.text-center Все задачи
+                table.table.table-bordered
+                    thead
+                        td Исполнитель
+                        td Название задачи
+                        td Приоритет
+                        td Статус
+                        td id
+                        td Дата создания
+                    if alltask
+                        each task in alltask
+                            tr
+                                td #{task.executant}
+                                td
+                                    a(href="/task/" + task._id) #{task.name}
+                                td #{task.priority}
+                                td #{task.status}
+                                td #{task.id}
+                                td #{performDate(task.dateOfcreation)}
+                    else
+                        tr
+                            td Задач пока нет
+                            td -
+                            td -
+                            td -
+                            td -
+                            td -
+
+
+    script.
+        // AJAX for change avatar
+        $(document).ready(function () {
+            $("#formavatar").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-avatar",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
+                })
+                        .done(function (person) {
+                            //path.person
+                            $("#img").attr("src", "/" + person.person);
+                        })
+                        .fail(function () {
+                        })
+                        .always(function () {
+                        });
+                e.preventDefault();
+            })
+        });
+
+        // AJAX for change password
+        $(document).ready(function () {
+            var changepassword = $('#changepassword');
+            $("#form").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-password",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                    .done(function () {
+                        alertify.success("Пароль изменен!");
+                    })
+                    .fail(function (errInfo) {
+                        if(errInfo.responseJSON.errInfo[0].msg) {
+                            alertify.error(errInfo.responseJSON.errInfo[0].msg);
+                        }
+                        else{
+                            alertify.error(errInfo.responseJSON.errInfo);
+                        }
+                    })
+                    .always(function () {
+                    });
+                e.preventDefault();
+            })
+
+        // AJAX for change personal information
+            $("#info").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-info",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                    .done(function (info) {
+                        console.log(info);
+                        $('#name').text("Имя: " + info.info.name);
+                        $('#surname').text("Фамилия: " + info.info.surname);
+                        alertify.success("Имя изменено!");
+                    })
+                    .fail(function () {
+                        alertify.error("Ошибка!");
+                    })
+                    .always(function () {
+                    });
+                e.preventDefault();
+            })
+
+            // AJAX for change contact information
+            $("#cont").on('submit', function (e) {
+                $.ajax({
+                    method: "POST",
+                    url: "/change-contacts",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                    .done(function (cont) {
+                        $('#email').text("Е-мейл: " + cont.cont.email);
+                        $('#tel').text("Телефон: " + cont.cont.tel);
+                        $('#skypee').text("Skype " + cont.cont.skype);
+                        alertify.success("Контакты изменены!");
+                    })
+                    .fail(function (errInfo) {
+                        alertify.error(errInfo.responseJSON.errInfo[0].msg);
+                    })
+                    .always(function () {
+                    });
+                e.preventDefault();
+            })
+
+            $("body").css("padding", "0px");
+            //Form to change password
+            $(".password").css("display", "none");
+            var counter = 1;
+            $("#changepasswordlink, #sendpassword, #dismiss").on('click', function () {
+                counter++;
+                display();
+            });
+            function display() {
+                if (counter % 2 == 0) {
+                    $(".password").css("display", "block");
+                    console.log(counter);
+                }
+                else {
+                    $(".password").css("display", "none");
+                }
+            }
+
+            //Form to change personal information
+            $(".forminfo").css("display", "none");
+            var infCounter = 1;
+            $("#changeinfo, #sendinfo,#dismissinfo").on('click', function () {
+                infCounter++;
+                infDisplay();
+            });
+            function infDisplay() {
+                if (infCounter % 2 == 0) {
+                    $(".forminfo").css("display", "block");
+                    $(".info").css("display", "none");
+                }
+                else {
+                    $(".forminfo").css("display", "none");
+                    $(".info").css("display", "block");
+                }
+            }
+
+            //Form to change contacts
+            $(".formcontacts").css("display", "none");
+            var contCounter = 1;
+            $("#changecontacts, #sendcontacts,#dismisscontacts").on('click', function () {
+                contCounter++;
+                contDisplay();
+            });
+            function contDisplay() {
+                if (contCounter % 2 == 0) {
+                    $(".formcontacts").css("display", "block");
+                    $(".contacts").css("display", "none");
+                }
+                else {
+                    $(".formcontacts").css("display", "none");
+                    $(".contacts").css("display", "block");
+                }
+            }
+
+        });

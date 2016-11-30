@@ -44,7 +44,7 @@ a {
 }
 a:hover {
 	text-decoration: none;
-	color:#eee;	
+	color:#eee;
 	}
 
 .btn-primary {
@@ -53,14 +53,14 @@ a:hover {
 	color: #fff;
 	border:none;
 	margin-top: 20px;
-}	
+}
 
-.btn-primary:hover, 
+.btn-primary:hover,
 .btn-primary:focus{
   background: #eb8984;
   outline: none;
   box-shadow: none;
-} 
+}
 
 .text-center h2 {
 	margin-bottom:30px;
@@ -84,7 +84,7 @@ a:hover {
 .btn-default:hover {
 	background-color:#f9f9f9;
 	color:#ED502E;
-	border-color: #fff;	
+	border-color: #fff;
 }
 
 /*===========================
@@ -98,9 +98,9 @@ a:hover {
 .navbar-brand h1 {
 	margin-top:-1px;
 	padding-top:5px;
-	float: left;	
-	font-size: 30px;	
-	color:#333;		
+	float: left;
+	font-size: 30px;
+	color:#333;
 }
 .navbar-brand h1 span {
 	color: #ED502E;
@@ -110,11 +110,11 @@ a:hover {
 	font-size:12px;
 	float:right;
 	text-transform:uppercase;
-	font-weight:600;	
+	font-weight:600;
 }
 
 .menu ul.nav-tabs li {
-	color:#000;	
+	color:#000;
 }
 
 .nav-tabs {
@@ -124,17 +124,17 @@ a:hover {
 	float: left;
 	margin-bottom: 0;
 }
-.nav-tabs > li > a {	
+.nav-tabs > li > a {
 	border-radius:0;
 	color:#333;
 	padding:30px;
 }
 
-.nav-tabs > li > a:hover {	
+.nav-tabs > li > a:hover {
 	color: #ED502E;
 	border-color: #fff #fff #fff;
 	border-radius:0;
-	background-color:#fff; 
+	background-color:#fff;
 	transition: all 0.3s ease-in-out;
 	-moz-transition: all 0.3s ease-in-out;
 	-webkit-transition: all 0.3s ease-in-out;
@@ -161,7 +161,7 @@ a:hover {
 
 .box {
 	margin-top:70px;
-	text-align:center;	
+	text-align:center;
 	background:#f9f9f9;
 }
 .box h4 {
@@ -265,13 +265,13 @@ a:hover {
 	border-radius:50%;
 }
 .services-box i.fa-rocket {
-	background-color: #00abf0;	
+	background-color: #00abf0;
 }
 .services-box i.fa-cogs {
-	background-color: #02FE7C;	
+	background-color: #02FE7C;
 }
 .services-box i.fa-eye {
-	background-color: #0077b5;	
+	background-color: #0077b5;
 }
 
 .services-box h4 {
@@ -316,7 +316,7 @@ a:hover {
   background: #db3615;
 }
 
-.progress, 
+.progress,
 .progress-bar {
   height: 50px;
   line-height: 20px;
@@ -629,7 +629,7 @@ ul.pagination > li > a i{
   margin-right:5px;
 }
 
-ul.pagination > li.active > a, 
+ul.pagination > li.active > a,
 ul.pagination > li:hover > a {
   background-color: #ED502E !important;
   border-color: #ED502E !important;
@@ -651,7 +651,7 @@ ul.pagination > li:hover > a {
   outline: 0 none;
 }
 
-ul.tag-cloud, 
+ul.tag-cloud,
 ul.sidebar-gallery {
   list-style: none;
   padding: 0;
@@ -673,7 +673,7 @@ ul.sidebar-gallery {
 
 .tag-cloud li a:hover{
   background:#ED502E;
-  color: #fff;  
+  color: #fff;
 }
 
 .sidebar-gallery li{
@@ -729,7 +729,7 @@ ul.sidebar-gallery {
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
   -o-transition: opacity 500ms;
-  transition: opacity 500ms;  
+  transition: opacity 500ms;
   padding: 30px;
 }
 
@@ -753,7 +753,7 @@ ul.sidebar-gallery {
   margin-bottom:50px;
 }
 
-.portfolio-items, 
+.portfolio-items,
 .portfolio-filter {
   list-style: none outside none;
   margin: 0 0 40px 0;
@@ -899,7 +899,7 @@ ul.sidebar-gallery {
 }
 
 .contact-info i {
-	color:#eb8984;	
+	color:#eb8984;
 }
 
 .contact-form {
@@ -955,7 +955,7 @@ textarea.form-control {
 ============================ */
 .footer {
 	background:#292929;
-	padding:50px;	
+	padding:50px;
 }
 
 .footer p {
@@ -982,17 +982,17 @@ ul.social-network li {
 	display:inline;
 	font-size: 14px;
 	margin-right:10px;
-	
+
 }
-ul.social-network li a {	
+ul.social-network li a {
 	color:#d0d0d0;
 	padding:5px 10px;
 	background:#000;
 	border-radius:50%;
 }
 
-.social-network li:hover .fa-twitter {	
-	color: #00abf0;	
+.social-network li:hover .fa-twitter {
+	color: #00abf0;
 }
 
 .social-network li:hover .fa-facebook {
@@ -1003,11 +1003,11 @@ ul.social-network li a {
 }
 .social-network li:hover .fa-pinterest {
   color: #c9171e;
-  
+
 }
 .social-network li:hover .fa-linkedin {
   color: #0077b5;
-  
+
 }
 .footer h3 {
 	color:#fff;
@@ -1022,12 +1022,12 @@ ul.social-network li a {
 }
 .footer ul li:hover {
 	color:#ED502E;
-	cursor:pointer;	
+	cursor:pointer;
 }
 
 .sub-footer a {
 	color: #fff;
-	font-size:13px;	
+	font-size:13px;
 }
 
 .sub-footer a:hover {
@@ -1061,7 +1061,7 @@ a.scrollup{
 	text-decoration:none;
 	position:fixed;
 	bottom:20px;
-	right:40px;	
+	right:40px;
 	opacity:0,5;
 	border-radius:50%;
 	z-index:999;
@@ -1069,5 +1069,5 @@ a.scrollup{
 a.scrollup:hover{
 	opacity:1;
 	background-color:#ED502E;
-	color:#fff;;	
+	color:#fff;;
 }

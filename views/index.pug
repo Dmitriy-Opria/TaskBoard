@@ -4,7 +4,11 @@ block content
     .container-fluid
         .expanded.row
             button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            button.btn.btn-danger.pull-right(type='button', onclick="fireLogout()") выйти
+            div.pull-right
+                div.avatar
+                    a(href="/personalarea")
+                        img(src="/images/avatars/no-avatar_jpg.jpg")
+                p #{username}
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
@@ -97,12 +101,12 @@ block content
                             option(value='высокий') высокий
                             option(value='критичный') критичный
                 .modal-footer
-                    button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
+                    button.btn.btn-info(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
-            height: 500,
+            height: 250,
             theme: 'modern',
             plugins: [
                 'advlist autolink lists link image charmap print preview hr anchor pagebreak',

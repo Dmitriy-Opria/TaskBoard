@@ -9,7 +9,8 @@ const express = require('express'),
     supported = ["ru", "en", 'uk'],
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    moment = require('moment');
+    moment = require('moment'),
+    expressValidator = require('express-validator');
 
 //const form = new formidable.IncomingForm()
 
@@ -29,6 +30,7 @@ app.use(logger('dev'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(expressValidator());
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public/stylesheets')));
 app.use(express.static(path.join(__dirname, 'public')));

@@ -39,9 +39,11 @@ function removeTask(taskID) {
     })
         .done(function (msg) {
             alertify.success("Задача успешно удалена");
+            window.location.replace("/board");
         })
         .fail(function (msg) {
             alertify.error("Случилась ошибка операции!");
+            window.location.replace("/board");
         })
 }
 function fireLogout() {
@@ -60,3 +62,4 @@ $(document).on('focusin', function (e) {
         e.stopImmediatePropagation();
     }
 });
+
