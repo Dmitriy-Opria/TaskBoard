@@ -1,10 +1,11 @@
 /**
  * Created by alexey-dev on 23.10.16.
  */
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var TaskModel = new Schema({
+const TaskModel = new Schema({
+    project: { type: Schema.Types.ObjectId, ref: 'Project' },
     executant: { type: Schema.Types.ObjectId, ref: 'User' },
     description:  String,
     priority: String,
@@ -17,7 +18,7 @@ var TaskModel = new Schema({
  * Created by alexey-home on 16.11.16.
  */
 
-var UserModel = new Schema({
+const UserModel = new Schema({
     name:  String,
     surname: String,
     avatar:{ type: String, default: '/images/no-avatar_jpg.jpg' },
@@ -26,9 +27,18 @@ var UserModel = new Schema({
     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
 });
 
-var connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
+const ProjectModel = new Schema({
+    name:  String,
+    cover: { type: String, default: '/images/dc.png' },
+    dateOfcreation:  { type: Date, default: Date.now },
+    description:  String,
+    tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
+});
 
-var Task = connection.model('Task', TaskModel),
+const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
+
+const Task = connection.model('Task', TaskModel),
     User = connection.model('User', UserModel);
+    Project = connection.model('User', ProjectModel);
 module.exports.Task = Task;
 module.exports.User = User;

@@ -13,7 +13,20 @@ const upload = multer({dest: os.tmpdir()});// save to system tmp dir
 
 router.get('/', function (req, res) {
     "use strict";
-    res.render('welcome');
+    res.render('welcome',{user: req.session.user});
+});
+router.get('/login',(req, res)=>{
+    "use strict";
+    if (req.session.user) {
+        res.redirect("/board");
+    }
+    else{
+        res.render("loginform");
+    }
+});
+router.get('/regiter', (req,res)=>{
+    "use strict";
+    res.render("registerform");
 });
 router.post('/registerme', function (req, res) {
     "use strict";
@@ -39,7 +52,15 @@ router.post('/registerme', function (req, res) {
         }
     })
 });
-
+router.get('/profile',(req,res)=>{
+    "use strict";
+    if(req.session.user){
+        res.render("profile",{user: req.session.user});
+    }
+    else{
+        res.redirect("/login");
+    }
+});
 /* GET board page. */
 router.get('/board', function (req, res) {
     console.log(req.user);
@@ -55,7 +76,7 @@ router.get('/board', function (req, res) {
         });
     }
     else {
-        res.redirect("/");
+        res.redirect("/login");
     }
 });
 router.post('/logout', (req, res) => {

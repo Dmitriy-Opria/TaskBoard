@@ -1,0 +1,17 @@
+extends layout
+block content
+    // Created by alexey-home on 30.11.16.
+    .container
+        .col-lg-4.col-lg-offset-4
+            form(action="/login" method="POST")
+                .form-group
+                    label(for="exampleInputEmail1" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
+                        h2 Email
+                    input(type="email" class="form-control wow fadeInRight" id="exampleInputEmail1" placeholder="Email" name="username" data-wow-offset='0', data-wow-delay='0.2s')
+                .form-group
+                    label(class="wow fadeInRight" for="exampleInputPassword1" data-wow-offset='0', data-wow-delay='0.1s')
+                        h2 Пароль
+                    input(type="password" class="form-control wow fadeInRight" id="exampleInputPassword1" placeholder="Password" name="password" data-wow-offset='0', data-wow-delay='0.2s')
+                .form-group
+                    button(type="reset" class="btn btn-default") Очистить
+                    button(type="submit" class="btn btn-default") Войти
