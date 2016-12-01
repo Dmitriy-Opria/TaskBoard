@@ -55,7 +55,6 @@ router.post('/registerme', function (req, res) {
     req.check('confirmpassword','Пароли не совпадают').equals(req.body.userpassword);
 
     var errors = req.validationErrors();
-
     if(errors){
         res.render('register',{errors : errors,
                                 username : req.body.username,
@@ -65,10 +64,12 @@ router.post('/registerme', function (req, res) {
     }
     else {
         User.findByEmail(req.body.email, (error, user)=>{
-            if(user){
-                let errors={}
-                    errors.msg = "Пользователь с таким е-мейл уже существует";
-                    errors.param = "useremail";
+            console.log(user);
+            if(user.length > 0){
+                let errors=[{}];
+                    errors[0].param = "useremail",
+                    errors[0].msg = "Пользователь с таким е-мейл уже существует",
+                    errors[0].value = req.body.useremail;
                 res.render('register',{errors :errors,
                     username : req.body.username,
                     useremail : req.body.useremail,
@@ -311,39 +312,29 @@ router.post('/change-info', function (req, res) {
         });
 });
 router.post('/change-contacts', function (req, res) {
-    req.check('contemail','Неверный e-mail').isEmail();
-
-    var errors = req.validationErrors();
-    if(!errors){
-        User.findByIdAndUpdate(req.session.user._id, {
-                $set: {
-                    email: req.body.contemail,
-                    tel: req.body.conttel,
-                    skype: req.body.skype
-                }
-            },
-            {new: true},
-            function (err) {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    User.findById(req.session.user._id, function (err, cont) {
-                        if (err) {
-                            console.error(err);
-                            res.statusCode(500);
-                        }
-                        else {
-                            res.status(201).json({cont: cont});
-                        }
-                    });
-                }
-            });
-    }
-    else{
-        res.status(500).json({errInfo: errors});
-    }
-
+    User.findByIdAndUpdate(req.session.user._id, {
+            $set: {
+                tel: req.body.conttel,
+                skype: req.body.skype
+            }
+        },
+        {new: true},
+        function (err) {
+            if (err) {
+                console.error(err);
+            }
+            else {
+                User.findById(req.session.user._id, function (err, cont) {
+                    if (err) {
+                        console.error(err);
+                        res.statusCode(500);
+                    }
+                    else {
+                        res.status(201).json({cont: cont});
+                    }
+                });
+            }
+        });
 });
 router.get('/task/:id', function (req, res, next) {
 
