@@ -1,22 +1,24 @@
-var express = require('express'),
+"use strict";
+const express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
     logger = require('morgan'),
     debug = require('debug')('taskBoardProject:server'),
     lessMiddleware = require('less-middleware'),
     locale = require("locale"),
-    supported = ["ru","en",'uk'],
-    language,
+    supported = ["ru", "en", 'uk'],
     cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    moment = require('moment'),
+    expressValidator = require('express-validator');
 
-//var form = new formidable.IncomingForm()
+//const form = new formidable.IncomingForm()
 
 
-var routes = require('./routes/index');
-//var users = require('./routes/users');
+const routes = require('./routes/index');
+//const users = require('./routes/users');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,31 +29,31 @@ var language;
 app.use(logger('dev'));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(expressValidator());
 app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public/stylesheets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(locale(supported));
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     language = req.locale;
     next();
 });
-app.locals.performDate = function(data){
-    const moment = require('moment');
-        moment.locale(language);
-        return moment(data).format('D MMMM YYYY');
+app.locals.performDate = function (data) {
+    moment.locale(language);
+    return moment(data).format('D MMMM YYYY');
 };
 //========================= session ================================
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 //const mongoose = require('mongoose');
 app.use(session({
-    name: 'lalal',
-    secret: 'foo',
-    cookie: { path: '/', httpOnly: true, secure: false,maxAge: 60000 },
+    name: 'taskboard',
+    secret: 'lgetmoremoney',
+    cookie: {path: '/', httpOnly: true, secure: false, maxAge: 1000 * 60 * 60 * 24},
     resave: true,
     saveUninitialized: true,
-    store: new MongoStore({ url: 'mongodb://localhost:27017/session' })
+    store: new MongoStore({url: 'mongodb://localhost:27017/taskboard'})
 }));
 //===================================================================
 //========================= passport.js =============================
@@ -64,16 +66,16 @@ passport.use(new LocalStrategy({
         usernameField: 'username',
         passwordField: 'password'
     },
-    function(username, password, done) {
-        User.findOne({email:username}, function(err,user){
+    function (username, password, done) {
+        User.findOne({email: username}, function (err, user) {
             "use strict";
-            if(err){
+            if (err) {
                 console.error(err);
-                return done(null, false, { message: 'Incorrect username.' });
+                return done(null, false, {message: 'Incorrect username.'});
             }
-            else{
+            else {
 
-                if(user.password!==password) return done(null, false, { message: 'Incorrect password.' });
+                if (user.password !== password) return done(null, false, {message: 'Incorrect password.'});
             }
             return done(null, user);
         })
@@ -82,28 +84,39 @@ passport.use(new LocalStrategy({
 app.use(passport.initialize());
 app.use(passport.session());
 //app.use(app.router);
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/board',
-    failureRedirect: '/'
-}));
-passport.serializeUser(function(user, done) {
-    console.log(user);
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user) => {
+        if (!err) {
+            req.session.user = user;
+            res.redirect('/profile');
+        }
+        else {
+            return next(err);
+        }
+    })(req, res, next)
+});
+passport.serializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
-    console.log("deserialize:"+user);
-    User.findOne({email:user.email}, function(err, user) {
+passport.deserializeUser(function (user, done) {
+    User.findOne({email: user.email}, function (err, user) {
         done(err, user);
-   });
+    });
 });
 //===================================================================
+app.all('\/login|\/registerme', (req, res, next) => {
+    console.log("middleware work");
+    req.checkBody('username', 'Invalid postparam').notEmpty().isEmail();
+    req.checkBody('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
+    next();
+});
 app.use('/', routes);
 //app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
@@ -113,7 +126,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
+    app.use(function (err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -124,7 +137,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,

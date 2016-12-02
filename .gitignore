@@ -33,21 +33,8 @@ node_modules
 # Debug log from npm
 npm-debug.log
 /bower_components/
-Будет удалено .gitignore
-Будет удалено .idea/
-Будет удалено app.js
-Будет удалено bin/
-Будет удалено bower.json
-Будет удалено bower_components/
-Будет удалено gulpfile.js
-Будет удалено models/
-Будет удалено package.json
-Будет удалено public/
-Будет удалено routes/
-Будет удалено views/
 
-/public/javascripts/site.js
-/public/stylesheets/style.less
+
 
 # Dependency directories
 /node_modules
@@ -60,3 +47,4 @@ jspm_packages
 .node_repl_history
 /public/stylesheets/app.css
 /public/javascripts/app.js
+/public/images/covers/

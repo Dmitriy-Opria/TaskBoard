@@ -1,11 +1,12 @@
 /**
  * Created by alexey-dev on 23.10.16.
  */
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var TaskModel = new Schema({
-    executant: { type: Schema.Types.ObjectId, ref: 'User' },
+const TaskModel = new Schema({
+    project: { type: Schema.Types.ObjectId, ref: 'Project' },
+    executant_id: {type: Schema.Types.ObjectId, ref: 'User'},
     description:  String,
     priority: String,
     images:{ type: Array, default: [] },
@@ -17,18 +18,36 @@ var TaskModel = new Schema({
  * Created by alexey-home on 16.11.16.
  */
 
-var UserModel = new Schema({
+const UserModel = new Schema({
     name:  String,
     surname: String,
-    avatar:{ type: String, default: '/images/no-avatar_jpg.jpg' },
+    avatar:{ type: String, default: '/images/avatars/no-avatar_jpg.jpg' },
     email:  String,
+    tel: { type: String, default: '-'},
+    skype: { type: String, default: '-'},
     password: String,
-    tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
+    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
+    projects: [{type: Schema.Types.ObjectId, ref: 'Project'}]
 });
 
-var connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
+UserModel.statics.findByEmail = (email, cb) => {
+    return this.find({ email: email }, cb);
+};
 
-var Task = connection.model('Task', TaskModel),
-    User = connection.model('User', UserModel);
+const ProjectModel = new Schema({
+    owner_id: {type: Schema.Types.ObjectId, ref: 'User'},
+    name: String,
+    cover: {type: String, default: '/images/dc.png'},
+    dateOfcreation: {type: Date, default: Date.now},
+    description: String,
+    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}]
+});
+
+const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
+
+const Task = connection.model('Task', TaskModel),
+    User = connection.model('User', UserModel),
+    Project = connection.model('Project', ProjectModel);
 module.exports.Task = Task;
 module.exports.User = User;
+module.exports.Project = Project;

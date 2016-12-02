@@ -2,30 +2,40 @@ extends layout
 block content
     input(id="reloadValue" type="hidden" name="reloadValue" value="")
     .container-fluid
-        .expanded.row
-            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            button.btn.btn-danger.pull-right(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+        .card.hovercard
+            .card-background
+                img.card-bkimg(alt='', src='http://lorempixel.com/100/100/people/9/')
+                // http://lorempixel.com/850/280/people/9/
+            .useravatar
+                img(alt='', src=user.avatar)
+            .card-info
+                span.card-title #{user.name}
+        button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
                     thead
                         tr
-                            td(width='25%') Ожидающие
-                            td(width='25%') В работе
-                            td(width='25%') На проверку
-                            td(width='25%') Закрытые
+                            td(width='25%')
+                                h4 Ожидающие
+                            td(width='25%')
+                                h4 В работе
+                            td(width='25%')
+                                h4 На проверку
+                            td(width='25%')
+                                h4 Закрытые
                     tbody
                         each v in tasks
                             if v.status === 'waiting'
                                 tr
-                                    td(width='25%' class="droppable" data-status="waiting")
-                                        div(class='taskCard draggable waiting' class="ui-widget-content" data-id= v._id)
+                                    td(width='25%' data-status="waiting").droppable
+                                        div(class="taskCard draggable waiting ui-widget-content" data-id= v._id)
                                             h2 Задача #
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
@@ -41,7 +51,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
@@ -56,7 +66,7 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="closed")
                             else
@@ -71,10 +81,10 @@ block content
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
 
-    // modal
+    // modal for new task
     #myModal.modal.fade(tabindex='-1', role='dialog')
         .modal-dialog.custom-class(role='document')
             .modal-content
@@ -85,24 +95,24 @@ block content
                 .modal-body
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
 
-                            label(for='description') Описание задачи
-                            textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
+                        label(for='description') Описание задачи
+                        textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
-                            label(for='InputFile') вложить скриншот
-                            input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
+                        label(for='InputFile') вложить скриншот
+                        input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
 
-                            label(for='priority') приоритет задачи
-                            select#priority.inline(name='priority')
-                                option(value='обычный', selected='selected') обычный
-                                option(value='высокий') высокий
-                                option(value='критичный') критичный
+                        label(for='priority') приоритет задачи
+                        select#priority.inline(name='priority')
+                            option(value='обычный', selected='selected') обычный
+                            option(value='высокий') высокий
+                            option(value='критичный') критичный
                 .modal-footer
-                    button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
+                    button.btn.btn-info(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
-            height: 500,
+            height: 250,
             theme: 'modern',
             plugins: [
                 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
@@ -123,7 +133,7 @@ block content
         });
 
         $(function () {
-            shave(".content h5",70);
+            shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
             if (jQuery('#reloadValue').val().length === 0) {
@@ -143,16 +153,16 @@ block content
                     processData: false,
                     contentType: false
                 })
-                        .done(function (template) {
-                            $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
-                                    .append(template.html)
-                        })
-                        .fail(function (error) {
-                            // show error message
-                        })
-                        .always(function () {
-                            $("#myModal").modal("hide");
-                        });
+                    .done(function (template) {
+                        $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
+                            .append(template.html)
+                    })
+                    .fail(function (error) {
+                        // show error message
+                    })
+                    .always(function () {
+                        $("#myModal").modal("hide");
+                    });
                 form.preventDefault();
             })
         });
