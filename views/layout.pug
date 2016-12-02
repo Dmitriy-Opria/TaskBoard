@@ -42,6 +42,8 @@ body
                                             a(href='/register') Зарегистрироваться
                                     else
                                         a(href='/profile') Профиль
+                                        li(role='presentation')
+                                            a(href='/logout') Выход
                                 li(role='presentation')
                                     a(href='/contacts') Контакты
             // ----------------------------------- content ------------------------------------------------------------
@@ -101,6 +103,8 @@ body
                                 else
                                     li
                                         a(href='/profile') Профиль
+                                        li(role='presentation')
+                                            a(href='/logout') Выход
                             li
                                 a(href='/contacts') Контакты
                 .pull-right
