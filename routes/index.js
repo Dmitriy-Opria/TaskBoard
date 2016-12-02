@@ -48,7 +48,7 @@ router.get('/registerme', function (req, res) {
 router.get('/login',(req, res)=>{
     "use strict";
     if (req.session.user) {
-        res.redirect('/profile');
+        res.redirect("/profile");
     }
     else{
         res.render("loginform");
@@ -384,7 +384,7 @@ router.post('/remove', (req, res) => {
 
     });
 });
-router.post('/login', (req, res) => {
+/*router.post('/login', (req, res) => {
     "use strict";
     User.findByEmail(req.body.username, (err, user) => {
         if (err) {
@@ -403,7 +403,7 @@ router.post('/login', (req, res) => {
             });
         }
     })
-});
+});*/
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
     /*
