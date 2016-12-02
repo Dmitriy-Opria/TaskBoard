@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 router.get('/login',(req, res)=>{
     "use strict";
     if (req.session.user) {
-        res.redirect("/board");
+        res.redirect("/profile");
     }
     else{
         res.render("loginform");
