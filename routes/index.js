@@ -84,7 +84,7 @@ router.get('/profile',(req,res)=>{
 });
 /* GET board page. */
 router.get('/board', (req, res) => {
-
+    console.log(req.query);
     if (req.session.user) {
         Task.find({project: mongoose.Types.ObjectId(req.query.project)}, (err, tasks) => {
             if (err) {
@@ -92,7 +92,7 @@ router.get('/board', (req, res) => {
                 res.statusCode(500);
             }
             else {
-                res.render('index', {user: req.session.user, tasks: tasks});
+                res.render('index', {user: req.session.user, tasks: tasks, projectID: req.query.project});
             }
         });
     }
@@ -116,6 +116,7 @@ router.get('/logout', (req, res) => {
 });
 router.post('/create', upload.array('files', 4), (req, res) => {
     "use strict";
+    console.log(req.body);
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
@@ -138,7 +139,7 @@ router.post('/create', upload.array('files', 4), (req, res) => {
             });
         });
 
-        async.parallel(arrayOfTask, (err, results) => {
+        /*        async.parallel(arrayOfTask, (err, results) => {
             Task.create({
                 description: req.body.description,
                 priority: req.body.priority,
@@ -148,11 +149,14 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                     console.error(err);
                     res.sendStatus(500);
                 }
+         Project.findById(req.body.projectID,(err, project)=>{
+         project.tasks.push()
+         })
                 object.dateOfcreation = req.app.locals.performDate(object.dateOfcreation);
                 let template = pug.renderFile(path.join(__dirname, '../models/taskCard.pug'), {task: object});
                 res.status(201).json({html: template});
             });
-        })
+        })*/
 
     } else {
         Task.create({
@@ -391,7 +395,7 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
     req.checkBody('projectdescription', 'Invalid postparam').notEmpty().isLength({max: 255});
     if (req.file) {
-        if (req.file.size > 8192) next("размер обложки проекта слишком большой (8кб максимум)");
+        if (req.file.size > 8388608) next("Размер обложки проекта слишком большой (8мб максимум)");
         const newFileName = Date.now() + req.file.originalname;
         fs.readFile(req.file.path, function (err, content) {
             if (err) {
@@ -426,6 +430,31 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
             }
         })
     }
+    else{
+        Project.create({
+            name: req.body.projectname,
+            description: req.body.projectdescription,
+            cover: 'images/covers/project_img.png'
+        }, (err, project) => {
+            if (err) {
+                next(err);
+            }
+            else {
+                User.findOne({_id: req.session.user._id}, (err, doc) => {
+                    doc.projects.push(project);
+                    doc.save((err, updatedDoc) => {
+                        next(err);
+                        res.redirect('/profile');
+                    });
+                })
+            }
+        })
+    }
+
+
+
+
+
 });
 
 module.exports = router;
