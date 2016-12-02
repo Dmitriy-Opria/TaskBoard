@@ -2,22 +2,28 @@ extends layout
 block content
     input(id="reloadValue" type="hidden" name="reloadValue" value="")
     .container-fluid
-        .expanded.row
-            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            div.pull-right
-                div.avatar
-                    a(href="/personalarea")
-                        img(src="/images/avatars/no-avatar_jpg.jpg")
-                p #{username}
+        .card.hovercard
+            .card-background
+                img.card-bkimg(alt='', src='http://lorempixel.com/100/100/people/9/')
+                // http://lorempixel.com/850/280/people/9/
+            .useravatar
+                img(alt='', src=user.avatar)
+            .card-info
+                span.card-title #{user.name}
+        button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
                     thead
                         tr
-                            td(width='25%') Ожидающие
-                            td(width='25%') В работе
-                            td(width='25%') На проверку
-                            td(width='25%') Закрытые
+                            td(width='25%')
+                                h4 Ожидающие
+                            td(width='25%')
+                                h4 В работе
+                            td(width='25%')
+                                h4 На проверку
+                            td(width='25%')
+                                h4 Закрытые
                     tbody
                         each v in tasks
                             if v.status === 'waiting'
@@ -78,7 +84,7 @@ block content
                                                     h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
 
-    // modal
+    // modal for new task
     #myModal.modal.fade(tabindex='-1', role='dialog')
         .modal-dialog.custom-class(role='document')
             .modal-content

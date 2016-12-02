@@ -1,19 +1,129 @@
 doctype html
-html
-  head
-    meta(charset='UTF-8')
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
     title TaskBoard
-    script(src='/javascripts/app.js')
-    link(rel="stylesheet" type="text/css" href="/stylesheets/prism.css")
-    script(src="/javascripts/prism.js")
-    script(src="//cdn.tinymce.com/4/tinymce.min.js")
-    script(src="/jquery-ui-1.12.1/jquery-ui.min.js")
-
-    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
-    link(rel='stylesheet', href='/stylesheets/app.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel="stylesheet" type="text/css" href="/stylesheets/prism.css")
-    link(rel='stylesheet', href='/jquery-ui-1.12.1/jquery-ui.theme.min.css')
-
-  body(onunload="")
+    // Bootstrap
+    link(href='stylesheets/bootstrap.min.css', rel='stylesheet')
+    link(rel='stylesheet', href='stylesheets/font-awesome.min.css')
+    link(rel='stylesheet', href='stylesheets/jquery.bxslider.css')
+    link(rel='stylesheet', type='text/css', href='stylesheets/isotope.css', media='screen')
+    link(rel='stylesheet', href='stylesheets/animate.css')
+    link(rel='stylesheet', href='javascripts/fancybox/jquery.fancybox.css', type='text/css', media='screen')
+    link(href='stylesheets/prettyPhoto.css', rel='stylesheet')
+    link(href='stylesheets/style.css', rel='stylesheet')
+    link(href='stylesheets/site.css', rel='stylesheet')
+body
+    header
+        nav.navbar.navbar-default.navbar-static-top(role='navigation')
+            .navigation
+                .container
+                    .navbar-header
+                        button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='.navbar-collapse.collapse')
+                            span.sr-only Toggle navigation
+                            span.icon-bar
+                            span.icon-bar
+                            span.icon-bar
+                        .navbar-brand
+                            a(href='index.html')
+                                h1
+                                    span TaskBoard
+                                    | T
+                    .navbar-collapse.collapse
+                        .menu
+                            ul.nav.nav-tabs(role='tablist')
+                                li(role='presentation')
+                                    a(class="active" href='/') Главная
+                                li(role='presentation')
+                                    if !user
+                                        a(href='/login') Войти
+                                        li(role='presentation')
+                                            a(href='/register') Зарегистрироваться
+                                    else
+                                        a(href='/profile') Профиль
+                                        li(role='presentation')
+                                            a(href='/logout') Выход
+                                li(role='presentation')
+                                    a(href='/contacts') Контакты
+            // ----------------------------------- content ------------------------------------------------------------
     block content
+    footer
+        .footer
+            .container
+                .col-md-4.wow.fadeInUp(data-wow-offset='0', data-wow-delay='0.2s')
+                    h2 DevPilotSolutions
+                    p
+                        | Мы нацелены на успех и поддержку наших продуктов.
+                    ul.social-network
+                        li
+                            a(href='#', data-placement='top', title='Facebook')
+                                i.fa.fa-facebook.fa-1x
+                        li
+                            a(href='#', data-placement='top', title='Google plus')
+                                i.fa.fa-google-plus.fa-1x
+                .col-md-4.wow.fadeInUp(data-wow-offset='0', data-wow-delay='0.4s')
+                    h2 В разроботке
+                    ul
+                        li Именные задачи
+                        hr
+                        li Заведение проектов
+                        hr
+                        li Администрирование проекта
+                        hr
+                        li Фильтрация задач
+                .col-md-4.wow.fadeInUp(data-wow-offset='0', data-wow-delay='0.6s')
+                    h3 CONTACT INFO
+                    ul
+                        li
+                            i.fa.fa-home.fa-2x
+                            |  Office # 38, Suite 54 Elizebth Street, Victoria State Newyork, USA 33026
+                        hr
+                        li
+                            i.fa.fa-phone.fa-2x
+                            |  +38 000 129900
+                        hr
+                        li
+                            i.fa.fa-envelope.fa-2x
+                            |  devpilot@contact.net
+        .sub-footer
+            .container
+                .row
+                    .col-md-6
+                        | © DevPilotSolutions. All Rights Reserved.
+                    .col-md-6
+                        ul.pull-right
+                            li
+                                a(href='/') Главная
+                            li
+                                if !user
+                                    a(href='/login') Войти
+                                    li
+                                        a(href='/register') Зарегистрироваться
+                                else
+                                    li
+                                        a(href='/profile') Профиль
+                                        li(role='presentation')
+                                            a(href='/logout') Выход
+                            li
+                                a(href='/contacts') Контакты
+                .pull-right
+                    a.scrollup(href='#home')
+                        i.fa.fa-angle-up.fa-3x
+    // jQuery (necessary for Bootstrap's JavaScript plugins)
+    script(src='javascripts/jquery-2.1.1.min.js')
+    // Include all compiled plugins (below), or include individual files as needed
+    script(src='javascripts/bootstrap.min.js')
+    script(src='javascripts/wow.min.js')
+    script(src='javascripts/fancybox/jquery.fancybox.pack.js')
+    script(src='javascripts/jquery.easing.1.3.js')
+    script(src='javascripts/jquery.bxslider.min.js')
+    script(src='javascripts/jquery.prettyPhoto.js')
+    script(src='javascripts/jquery.isotope.min.js')
+    script(src='javascripts/functions.js')
+    script.
+        wow = new WOW({}).init();
+        $(".btn-pref .btn").click(function () {
+            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-primary");
+        });

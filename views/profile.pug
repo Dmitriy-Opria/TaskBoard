@@ -1,0 +1,52 @@
+extends layout
+block content
+    //Created by alexey-home on 30.11.16.
+    .container-fluid
+        .col-lg-12.col-sm-6
+            .card.hovercard
+                .card-background
+                    img.card-bkimg(alt='', src='http://lorempixel.com/100/100/people/9/')
+                    // http://lorempixel.com/850/280/people/9/
+                .useravatar
+                    img(alt='', src=user.avatar)
+                .card-info
+                    span.card-title #{user.name}
+            .btn-pref.btn-group.btn-group-justified.btn-group-lg(role='group', aria-label='...')
+                .btn-group(role='group')
+                    button#stars.btn.btn-primary(type='button', href='#tab1', data-toggle='tab')
+                        span.glyphicon.glyphicon-star(aria-hidden='true')
+                        .hidden-xs Мои проекты
+                .btn-group(role='group')
+                    button#favorites.btn.btn-default(type='button', href='#tab2', data-toggle='tab')
+                        span.glyphicon.glyphicon-heart(aria-hidden='true')
+                        .hidden-xs Мои задачи
+                .btn-group(role='group')
+                    button#following.btn.btn-default(type='button', href='#tab3', data-toggle='tab')
+                        span.glyphicon.glyphicon-user(aria-hidden='true')
+                        .hidden-xs Мои настройки
+            .well
+                .tab-content
+                    #tab1.tab-pane.fade.in.active
+                        .row
+                            for val in user.projects
+                                .col-sm-6.col-md-4.col-lg-3
+                                    .thumbnail
+                                        img(src=val.cover, alt='...').img-rounded.img-responsive
+                                        .caption
+                                            h3=val.name
+                                            h5=val.description
+                                            p
+                                                a.btn.btn-warning(href='/board?project=' + val._id, role='button') Перейти к доске проекта
+                            .col-sm-6.col-md-4.col-lg-3
+                                .thumbnail
+                                    img(src='images/addP.png', alt='...')
+                                    .caption
+                                        h3 Новый проект
+                                        p
+                                            a.btn.btn-warning(href='#', role='button' data-toggle="modal" data-target="#projectNEW") Создать
+
+                    #tab2.tab-pane.fade.in
+                        h3 This is tab 2
+                    #tab3.tab-pane.fade.in
+                        h3 This is tab 3
+    include addProjectModal.pug

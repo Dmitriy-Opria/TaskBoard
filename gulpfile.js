@@ -24,7 +24,8 @@ gulp.task('build-css', function () {
     return gulp.src(['./bower_components/bootstrap/dist/css/bootstrap.css',
         './bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
         './bower_components/alertify-js/build/css/alertify.min.css',
-        './bower_components/alertify-js/build/css/themes/default.css'])
+        './bower_components/alertify-js/build/css/themes/default.css',
+        './public/stylesheets/site.less'])
         .pipe(less())
         .pipe(cleanCSS())
         .pipe(concat('app.css'))

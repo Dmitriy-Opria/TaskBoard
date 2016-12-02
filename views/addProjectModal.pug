@@ -1,0 +1,25 @@
+//Created by alexey-home on 30.11.16.
+.modal.fade(id="projectNEW" tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                h4.modal-title форма нового проекта
+            .modal-body
+                form(id="createProjectForm" action="/newproject" method="POST" enctype="multipart/form-data")
+                    .form-group
+                        label(for='exampleInputEmail1')
+                            h2 Имя проекта
+                        input#exampleInputEmail1.form-control(type='text', placeholder='' name="projectname")
+                    .form-group
+                        label(for='exampleInputEmail2')
+                            h2 Описание проекта
+                        textarea#exampleInputEmail2.form-control(placeholder='' name="projectdescription")
+                    .form-group
+                        label(for='exampleInputEmail3')
+                            h2 Обложка проекта
+                        input(id="exampleInputEmail3" type="file" name="cover" accept="image/*,image/jpeg")
+            .modal-footer
+                button.btn.btn-warning(type='button', data-dismiss='modal') Закрыть
+                button.btn.btn-primary(type='button' onclick="$('#createProjectForm').closest('form').submit();") Создать проект

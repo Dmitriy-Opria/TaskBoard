@@ -105,6 +105,12 @@ passport.deserializeUser(function (user, done) {
     });
 });
 //===================================================================
+app.all('\/login|\/registerme', (req, res, next) => {
+    console.log("middleware work");
+    req.checkBody('username', 'Invalid postparam').notEmpty().isEmail();
+    req.checkBody('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
+    next();
+});
 app.use('/', routes);
 //app.use('/users', users);
 
