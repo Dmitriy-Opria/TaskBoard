@@ -23,8 +23,8 @@ const UserModel = new Schema({
     surname: String,
     avatar:{ type: String, default: '/images/avatars/no-avatar_jpg.jpg' },
     email:  String,
-    tel: { type: String, default: '-'},
-    skype: { type: String, default: '-'},
+    tel: String,
+    skype: String,
     password: String,
     tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
     projects: [{type: Schema.Types.ObjectId, ref: 'Project'}]

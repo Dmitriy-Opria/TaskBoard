@@ -48,11 +48,13 @@ a:hover {
 }
 
 .btn-primary {
-    padding: 8px 20px;
+    padding: 13px 20px;
     background: #ED502E;
     color: #fff;
     border:none;
-    margin-top: 20px;
+    margin-top: 40px;
+    font-size:18px;
+    text-transform:uppercase;
 }
 
 .btn-primary:hover,
@@ -79,6 +81,8 @@ a:hover {
     font-size:18px;
     border-radius:30px;
     margin-left:-10px;
+    margin-top: 40px;
+    padding: 12px;
 }
 
 .btn-default:hover {

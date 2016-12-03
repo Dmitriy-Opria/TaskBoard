@@ -14,6 +14,8 @@ head
     link(href='stylesheets/prettyPhoto.css', rel='stylesheet')
     link(href='stylesheets/style.css', rel='stylesheet')
     link(href='stylesheets/site.css', rel='stylesheet')
+    script(src="//cdn.tinymce.com/4/tinymce.min.js")
+    script(src='/javascripts/app.js')
 body
     header
         nav.navbar.navbar-default.navbar-static-top(role='navigation')
@@ -26,10 +28,10 @@ body
                             span.icon-bar
                             span.icon-bar
                         .navbar-brand
-                            a(href='index.html')
+                            a(href='/')
                                 h1
-                                    span TaskBoard
-                                    | T
+                                    span Task
+                                    | Board
                     .navbar-collapse.collapse
                         .menu
                             ul.nav.nav-tabs(role='tablist')
@@ -40,12 +42,14 @@ body
                                         a(href='/login') Войти
                                         li(role='presentation')
                                             a(href='/register') Зарегистрироваться
+                                        li(role='presentation')
+                                            a(href='/register') Контакты
                                     else
                                         a(href='/profile') Профиль
                                         li(role='presentation')
                                             a(href='/logout') Выход
-                                li(role='presentation')
-                                    a(href='/contacts') Контакты
+                                        li(role='presentation')
+                                            a(href='/contacts') Контакты
             // ----------------------------------- content ------------------------------------------------------------
     block content
     footer

@@ -21,9 +21,10 @@ block content
                         span.glyphicon.glyphicon-heart(aria-hidden='true')
                         .hidden-xs Мои задачи
                 .btn-group(role='group')
-                    button#following.btn.btn-default(type='button', href='#tab3', data-toggle='tab')
+                    button#following.btn.btn-default(ype='button', href='#tab3', data-toggle='tab')
                         span.glyphicon.glyphicon-user(aria-hidden='true')
                         .hidden-xs Мои настройки
+
             .well
                 .tab-content
                     #tab1.tab-pane.fade.in.active
@@ -47,6 +48,21 @@ block content
 
                     #tab2.tab-pane.fade.in
                         h3 This is tab 2
-                    #tab3.tab-pane.fade.in
-                        h3 This is tab 3
+                    #tab3.tab-pane.fade.in.text-center
+                        .btn-pref.btn-group-vertical(role='group', aria-label='...')
+                            .btn-group(role='group')
+                                button.btn.btn-primary(type='button', href='#tab4', data-toggle='tab')
+                                    .hidden-xs Информация
+                            .btn-group(role='group')
+                                button.btn.btn-default(type='button', href='#tab5', data-toggle='tab')
+                                    .hidden-xs Контакты
+                            .btn-group(role='group')
+                                button.btn.btn-default(type='button', href='#tab6', data-toggle='tab')
+                                    .hidden-xs Пароль
+                    #tab4.tab-pane.fade.in
+                        include pa_info.pug
+                    #tab5.tab-pane.fade.in
+                        include pa_contacts.pug
+                    #tab6.tab-pane.fade.in
+                        include pa_password.pug
     include addProjectModal.pug
