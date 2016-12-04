@@ -73,11 +73,15 @@ passport.use(new LocalStrategy({
                 console.error(err);
                 return done(null, false, {message: 'Incorrect username.'});
             }
-            else {
-
+            else if(user) {
+                console.log(user);
                 if (user.password !== password) return done(null, false, {message: 'Incorrect password.'});
             }
+            else{
+                return done(null, false, {message: 'user not found'});
+            }
             return done(null, user);
+
         })
     }
 ));
@@ -88,7 +92,7 @@ app.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user) => {
         if (!err) {
             req.session.user = user;
-            res.redirect('/board');
+            res.redirect('/profile');
         }
         else {
             return next(err);

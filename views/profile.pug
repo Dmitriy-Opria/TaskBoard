@@ -52,13 +52,20 @@ block content
                         .btn-pref.btn-group-vertical(role='group', aria-label='...')
                             .btn-group(role='group')
                                 button.btn.btn-primary(type='button', href='#tab4', data-toggle='tab')
-                                    .hidden-xs Информация
+                                    span.glyphicon.glyphicon-paperclip.text-left(aria-hidden='true')
+                                        |&nbsp;
+                                    span.hidden-xs Имя и Фамилия
                             .btn-group(role='group')
                                 button.btn.btn-default(type='button', href='#tab5', data-toggle='tab')
-                                    .hidden-xs Контакты
+                                    span.glyphicon.glyphicon-earphone.text-left(aria-hidden='true')
+                                        | &nbsp;
+                                    span.hidden-xs Контакты
                             .btn-group(role='group')
                                 button.btn.btn-default(type='button', href='#tab6', data-toggle='tab')
-                                    .hidden-xs Пароль
+                                    span.glyphicon.glyphicon-wrench.text-left(aria-hidden='true')
+                                        | &nbsp;
+                                    span.hidden-xs Пароль
+
                     #tab4.tab-pane.fade.in
                         include pa_info.pug
                     #tab5.tab-pane.fade.in

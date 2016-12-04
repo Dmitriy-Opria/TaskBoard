@@ -1,14 +1,34 @@
 .container
     .col-lg-4.col-lg-offset-4
-        form(action="/change-info" method="POST")
+        form(id="info" action="/change-info" method="POST")
             .form-group
                 label(for="userName" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
                     h2 Имя
-                input(type="text" class="form-control wow fadeInRight" id="userName" placeholder="Имя" name="userFirstName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25)
+                input(type="text" class="form-control wow fadeInRight" id="userName" placeholder="Имя" name="userFirstName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 value=user.name)
             .form-group
                 label(for="userLastname" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
                     h2 Фамилия
-                input(type="text" class="form-control wow fadeInRight" id="userLastname" placeholder="Фамилия" name="userLastName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 minlength=2)
+                input(type="text" class="form-control wow fadeInRight" id="userLastname" placeholder="Фамилия" name="userLastName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 minlength=2 value=user.surname)
             .form-group
                 button(type="reset" class="btn btn-default") Очистить
                 button(type="submit" class="btn btn-default to-save") Сохранить
+script.
+    $("#info").on('submit', function (e) {
+        $.ajax({
+            method: "POST",
+            url: "/change-info",
+            data: $(this).serialize(),
+            processData: false
+        })
+            .done(function () {
+                alertify.success("Персональные данные изменены!");
+                window.location.replace("/profile");
+            })
+            .fail(function () {
+                alertify.error("Ошибка!");
+                window.location.replace("/profile");
+            })
+            .always(function () {
+            });
+        e.preventDefault();
+    })

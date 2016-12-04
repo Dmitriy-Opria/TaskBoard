@@ -75,9 +75,9 @@ a:hover {
 
 .btn-default {
     color: #333;
-    background-color: #fff;
-    border-color: #fff;
-    text-transform:uppercase;
+    background-color: transparent;
+    border-color: transparent!important;
+    text-transform:uppercase!important;
     font-size:18px;
     border-radius:30px;
     margin-left:-10px;
@@ -86,9 +86,9 @@ a:hover {
 }
 
 .btn-default:hover {
-    background-color:#f9f9f9;
+    background-color:transparent!important;
     color:#ED502E;
-    border-color: #fff;
+    border-color: transparent!important;
 }
 
 /*===========================
@@ -1075,4 +1075,18 @@ a.scrollup:hover{
     opacity:1;
     background-color:#ED502E;
     color:#fff;;
+}
+/*===========================
+	alertify
+============================ */
+
+.alertify-notifier .ajs-message.ajs-error{
+    color: #fff;
+    background: #ED502E;
+    text-shadow: none;
+}
+.alertify-notifier .ajs-message.ajs-success {
+    color: #fff;
+    background: #009688;
+    text-shadow: none;
 }

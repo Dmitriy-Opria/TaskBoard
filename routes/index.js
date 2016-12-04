@@ -98,6 +98,7 @@ router.get('/profile',(req,res)=>{
                 if (err) next(err);
                 res.render("profile", {user: person});
             });
+
     }
     else{
         res.redirect("/login");
@@ -308,7 +309,7 @@ router.post('/change-info', function (req, res) {
                         res.statusCode(500);
                     }
                     else {
-                        res.status(200);
+                        res.sendStatus(200);
                     }
                 });
             }
@@ -333,7 +334,7 @@ router.post('/change-contacts', function (req, res) {
                             res.statusCode(500);
                         }
                         else {
-                            res.redirect("/profile");
+                            res.sendStatus(200);
                         }
                     });
                 }

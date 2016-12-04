@@ -1,6 +1,6 @@
 .container
     .col-lg-4.col-lg-offset-4
-        form(action="/change-contacts" method="POST")
+        form(id="cont" action="/change-contacts" method="POST")
             .form-group
                 label(for="exampleInputEmail1" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
                     h2 Email
@@ -16,3 +16,23 @@
             .form-group
                 button(type="reset" class="btn btn-default") Очистить
                 button(type="submit" class="btn btn-default to-save") Сохранить
+script.
+    $("#cont").on('submit', function (e) {
+        $.ajax({
+            method: "POST",
+            url: "/change-contacts",
+            data: $(this).serialize(),
+            processData: false
+        })
+            .done(function (cont) {
+                alertify.success("Контакты изменены!");
+                window.location.replace("/profile");
+            })
+            .fail(function (errInfo) {
+                alertify.error("Контакты  не изменены!");
+                window.location.replace("/profile");
+            })
+            .always(function () {
+            });
+        e.preventDefault();
+    })
