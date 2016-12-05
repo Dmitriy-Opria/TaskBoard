@@ -24,7 +24,7 @@ block content
                                 h4 На проверку
                             td(width='25%')
                                 h4 Закрытые
-                    tbody
+                    tbody#tbody
                         each v in tasks
                             if v.status === 'waiting'
                                 tr
@@ -94,6 +94,7 @@ block content
                     h4.modal-title Новая задача
                 .modal-body
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal" method="POST")
+                        input(type="hidden" value=ownerProject name="ownerProject")
                         label(for='description') Описание задачи
                         textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
@@ -154,7 +155,7 @@ block content
                     contentType: false
                 })
                     .done(function (template) {
-                        $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
+                        $("#tbody")
                             .append(template.html)
                     })
                     .fail(function (error) {

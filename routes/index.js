@@ -106,17 +106,21 @@ router.get('/profile',(req,res)=>{
 });
 /* GET board page. */
 router.get('/board', (req, res) => {
-
     if (req.session.user) {
-        Task.find({project: mongoose.Types.ObjectId(req.query.project)}, (err, tasks) => {
-            if (err) {
-                console.error(err);
-                res.statusCode(500);
-            }
-            else {
-                res.render('index', {user: req.session.user, tasks: tasks});
-            }
-        });
+        Project
+            .findOne({ _id: req.query.project })
+            .populate('tasks') // only works if we pushed refs to children
+            .exec(function (err, tasks) {
+                if (err) {
+                    console.error(err);
+                    res.statusCode(500);
+                }
+                else {
+                    console.log(tasks.tasks);
+                   res.render('index', {user: req.session.user, tasks: tasks.tasks, ownerProject: req.query.project});
+                }
+            })
+
     }
     else {
         res.redirect("/login");
@@ -136,14 +140,14 @@ router.get('/logout', (req, res) => {
         }
     });
 });
-router.post('/create', upload.array('files', 4), (req, res) => {
+router.post('/create', upload.array('files', 4), (req, res, next) => {
     "use strict";
 
     console.log(req.body);
-    var headers = req.headers.referer,
-        projectID = headers.split("=");
+/*    var headers = req.headers.referer,
+        projectID = headers.split("=");*/
 
-    console.log(projectID[1]);
+    //console.log(projectID[1]);
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
@@ -177,11 +181,11 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                     res.sendStatus(500);
                 }
                 else {
-                    Project.findOne({_id: projectID[1]}, (err, doc) => {
+                    Project.findOne({_id: req.body.ownerProject}, (err, doc) => {
                         doc.tasks.push(object);
-                        doc.save((err, updatedDoc) => {
+                        doc.save((err) => {
                             if(err){
-                                res.status(500);
+                                next(err);
                             }
                             else{
                                 res.status(200);
@@ -204,11 +208,11 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                 console.error(err);
             }
             else {
-                Project.findOne({_id: projectID[1]}, (err, doc) => {
+                Project.findOne({_id: req.body.ownerProject}, (err, doc) => {
                     doc.tasks.push(object);
-                    doc.save((err, updatedDoc) => {
+                    doc.save((err) => {
                         if(err){
-                            res.status(500);
+                            next(err);
                         }
                         else{
                             res.status(200);
