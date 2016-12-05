@@ -138,6 +138,12 @@ router.get('/logout', (req, res) => {
 });
 router.post('/create', upload.array('files', 4), (req, res) => {
     "use strict";
+
+    console.log(req.body);
+    var headers = req.headers.referer,
+        projectID = headers.split("=");
+
+    console.log(projectID[1]);
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
@@ -170,6 +176,19 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                     console.error(err);
                     res.sendStatus(500);
                 }
+                else {
+                    Project.findOne({_id: projectID[1]}, (err, doc) => {
+                        doc.tasks.push(object);
+                        doc.save((err, updatedDoc) => {
+                            if(err){
+                                res.status(500);
+                            }
+                            else{
+                                res.status(200);
+                            }
+                        });
+                    })
+                }
                 object.dateOfcreation = req.app.locals.performDate(object.dateOfcreation);
                 let template = pug.renderFile(path.join(__dirname, '../models/taskCard.pug'), {task: object});
                 res.status(201).json({html: template});
@@ -183,6 +202,19 @@ router.post('/create', upload.array('files', 4), (req, res) => {
         }, (err, object) => {
             if (err) {
                 console.error(err);
+            }
+            else {
+                Project.findOne({_id: projectID[1]}, (err, doc) => {
+                    doc.tasks.push(object);
+                    doc.save((err, updatedDoc) => {
+                        if(err){
+                            res.status(500);
+                        }
+                        else{
+                            res.status(200);
+                        }
+                    });
+                })
             }
             object.date = req.app.locals.performDate(object.dateOfcreation);
             let template = pug.renderFile(path.join(__dirname, '../models/taskCard.pug'), {task: object});

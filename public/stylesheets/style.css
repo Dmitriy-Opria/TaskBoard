@@ -1090,3 +1090,6 @@ a.scrollup:hover{
     background: #009688;
     text-shadow: none;
 }
+#myModal{
+    color: #000;
+}

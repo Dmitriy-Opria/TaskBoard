@@ -94,23 +94,20 @@ block content
                     h4.modal-title Новая задача
                 .modal-body
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal" method="POST")
-
-                        input(type="hidden" value=projectID name="projectID")
-                        p #{projectID}
                         label(for='description') Описание задачи
                         textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
-                        label(for='InputFile') вложить скриншот
+                        label(for='InputFile') Вложить скриншот
                         input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
 
-                        label(for='priority') приоритет задачи
+                        label(for='priority') Приоритет задачи
                         select#priority.inline(name='priority')
-                            option(value='обычный', selected='selected') обычный
-                            option(value='высокий') высокий
-                            option(value='критичный') критичный
+                            option(value='Обычный', selected='selected') Обычный
+                            option(value='Высокий') Высокий
+                            option(value='Критичный') Критичный
                 .modal-footer
                     button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-info(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-danger(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
