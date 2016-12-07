@@ -10,14 +10,25 @@ block content
                 img(alt='', src=user.avatar)
             .card-info
                 span.card-title #{user.name}
-        .col-md-4
-            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-        .col-md-4
-        .col-md-4
-        form.form-inline#search
-            label(for="search") Добавить учасника проекта
-            input.form-control(type="text" id="search")
-            button.btn.btn-success(type='button') Найти
+        .row
+            .col-md-2
+                button.btn.btn-succes(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            .col-md-5
+                label.btn-succes(for="members") Учасники проекта
+                select.btn-succes(id="members")
+                    option #{user.email}
+                        if projectUsers
+                            for use in projectUsers
+                                option #{use.email}
+                        else
+                            option
+                                |None
+            .col-md-5
+            form.form-inline#search
+                label.btn-succes(for="searchInput") Добавить учасника
+                input.form-control(type="text" id="searchInput" name="searchPerson")
+                input(type="hidden" value=ownerProject name="ownerProject")
+                button.btn.btn-succes#btn-problem(type='button' onclick="$('#search').submit()") Найти
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
@@ -177,15 +188,15 @@ block content
                 $.ajax({
                     method: "POST",
                     url: "/search",
-                    data: new FormData(this),
-                    processData: false,
-                    contentType: false
+                    data: $(this).serialize(),
+                    processData: false
                 })
-                        .done(function (template) {
-
+                        .done(function () {
+                            alertify.success("Учасник добавлен!");
                         })
-                        .fail(function (error) {
-                            // show error message
+                        .fail(function (errInfo) {
+                            console.log(errInfo.responseJSON.errInfo);
+                            alertify.error(errInfo.responseJSON.errInfo);
                         })
                         .always(function () {
                         });

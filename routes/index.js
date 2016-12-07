@@ -116,8 +116,24 @@ router.get('/board', (req, res) => {
                     res.statusCode(500);
                 }
                 else {
-                    console.log(tasks.tasks);
-                   res.render('index', {user: req.session.user, tasks: tasks.tasks, ownerProject: req.query.project});
+                    //console.log(tasks);
+                    Project
+                        .findById(req.query.project)
+                        .populate('users')
+                        .exec(function (err, users) {
+                            if (err) {
+                                console.error(err);
+                                res.statusCode(500);
+                            }
+                            else{
+                                console.log(users);
+                                res.render('index', {user: req.session.user, tasks: tasks.tasks, ownerProject: req.query.project, projectUsers: users.users});
+                            }
+                        });
+                   /*User.find({tasks : req.query.project}.where(req.query.project).in(['tasks']), (err, user) => {
+                        console.log(req.query.project);
+                        console.log(user);
+                    });*/
                 }
             })
 
@@ -382,7 +398,7 @@ router.get('/task/:id', (req, res, next) => {
 
     Task.findById(req.params.id, (err, doc) => {
         if (err) next(err);
-        res.render('taskdesk', {task: doc})
+        res.render('taskdesk', {task: doc});
     })
 });
 router.post('/remove', (req, res) => {
@@ -426,6 +442,51 @@ router.post('/login', (req, res) => {
         }
     })
 });
+router.post('/search', (req, res) => {
+    "use strict";
+    Project.findById(req.body.ownerProject, (err, project) => {
+            if (err) {
+                res.status(500).json({errInfo: "Проект был удален!"});
+            }
+            else {
+                if(project.owner_id==req.session.user._id){
+                    User.findOne({email : req.body.searchPerson}, (err, user) => {
+                        if (user!==null) {
+                            user.projects.push(req.body.ownerProject);
+                            user.save((err) => {
+                                if(err){
+                                    res.status(500).json({errInfo: "Ошибка записи пользователя!"});
+                                }
+                                else{
+                                    Project.findById(req.body.ownerProject, (err, project) => {
+                                        project.users.push(user._id);
+                                        project.save((err) => {
+                                            if(err){
+                                                res.status(500).json({errInfo: "Ошибка записи проекта!"});
+                                            }
+                                            else{
+
+                                                res.sendStatus(200);
+                                            }
+                                        })
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                        }
+                    })
+                }
+                else{
+                    res.status(500).json({errInfo: "Вы не являетесь автором этого проекта!"});
+                }
+            }
+        })
+    //if(req.body.ownerProject==req.session.user._id){}
+
+});
+
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
     /*
@@ -454,6 +515,7 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
                     }
                     else {
                         Project.create({
+                            owner_id : req.session.user._id,
                             name: req.body.projectname,
                             description: req.body.projectdescription,
                             cover: 'images/covers/' + newFileName
@@ -478,6 +540,7 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
     }
     else{
         Project.create({
+            owner_id : req.session.user._id,
             name: req.body.projectname,
             description: req.body.projectdescription,
             cover: 'images/dc.png'

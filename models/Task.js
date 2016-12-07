@@ -40,7 +40,8 @@ const ProjectModel = new Schema({
     cover: {type: String, default: '/images/dc.png'},
     dateOfcreation: {type: Date, default: Date.now},
     description: String,
-    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}]
+    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
+    users: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
