@@ -9,6 +9,7 @@ const express = require('express'),
     Project = require('../models/Task').Project,
     pug = require('pug'),
     async = require('async'),
+    underscore = require('underscore'),
     mongoose = require('mongoose');
 
 const upload = multer({dest: os.tmpdir()});// save to system tmp dir
@@ -449,31 +450,44 @@ router.post('/search', (req, res) => {
             }
             else {
                 if(project.owner_id==req.session.user._id){
-                    User.findOne({email : req.body.searchPerson}, (err, user) => {
-                        if (user!==null) {
-                            user.projects.push(req.body.ownerProject);
-                            user.save((err) => {
-                                if(err){
-                                    res.status(500).json({errInfo: "Ошибка записи пользователя!"});
-                                }
-                                else{
-                                    Project.findById(req.body.ownerProject, (err, project) => {
-                                        project.users.push(user._id);
-                                        project.save((err) => {
-                                            if(err){
-                                                res.status(500).json({errInfo: "Ошибка записи проекта!"});
-                                            }
-                                            else{
 
-                                                res.sendStatus(200);
-                                            }
-                                        })
-                                    });
-                                }
-                            });
+
+                    //if(project.users.)
+                    User.findOne({email : req.body.searchPerson}, (err, user) => {
+                        var simmilars = underscore.find(project.users,function (personFind) {
+                            return personFind.toString()===user._id.toString()
+                        });
+                        console.log(simmilars);
+                        if(!simmilars) {
+                            if (user !== null) {
+                                user.projects.push(req.body.ownerProject);
+                                user.save((err) => {
+                                    if (err) {
+                                        res.status(500).json({errInfo: "Ошибка записи пользователя!"});
+                                    }
+                                    else {
+                                        Project.findById(req.body.ownerProject, (err, project) => {
+                                            project.users.push(user._id);
+                                            project.save((err) => {
+                                                if (err) {
+                                                    res.status(500).json({errInfo: "Ошибка записи проекта!"});
+                                                }
+                                                else {
+
+                                                    res.sendStatus(200);
+                                                }
+                                            })
+                                        });
+                                    }
+                                });
+                            }
+
+                            else {
+                                res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                            }
                         }
-                        else {
-                            res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                        else{
+                            res.status(500).json({errInfo: "Пользователь уже добавлен к проекту!"});
                         }
                     })
                 }

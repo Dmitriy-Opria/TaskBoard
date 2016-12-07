@@ -75,7 +75,7 @@ a:hover {
 
 .btn-default {
     color: #333;
-    background-color: transparent;
+    background: none;
     border-color: transparent!important;
     text-transform:uppercase!important;
     font-size:18px;
@@ -86,7 +86,7 @@ a:hover {
 }
 
 .btn-default:hover {
-    background-color:transparent!important;
+    background:none;
     color:#ED502E;
     border-color: transparent!important;
 }
