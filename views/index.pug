@@ -149,8 +149,41 @@ block content
                 '//www.tinymce.com/css/codepen.min.css'
             ]
         });
-
+        // чтоби работал редактор кода при создании задачи
+        $(document).on('focusin', function (e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
         $(function () {
+
+            var width = $('body > div.container-fluid > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)').width();
+            $('.taskCard').css('width', width);
+            $(".droppable").droppable({
+                accept: '.draggable',
+                hoverClass: "drop-hover",
+                drop: function (event, ui) {
+                    $(this).append(ui.draggable);
+                    $.ajax({
+                        method: "POST",
+                        url: "/change-state",
+                        data: {id: ui.draggable.data('id'), status: $(this).data('status')}
+                    })
+                        .done(function (msg) {
+                            alertify.success("Статус задачи успешно изменен!");
+                        })
+                        .fail(function (msg) {
+                            alertify.error("Случилась ошибка операции!");
+                        })
+                }
+            });
+            $(".draggable").draggable({
+                helper: "clone",
+                axis: "x",
+                cursor: "crosshair",
+                opacity: 0.45
+            });
+
             shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
