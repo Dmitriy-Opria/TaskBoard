@@ -10,7 +10,25 @@ block content
                 img(alt='', src=user.avatar)
             .card-info
                 span.card-title #{user.name}
-        button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+        .row
+            .col-md-2
+                button.btn.btn-succes(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            .col-md-5
+                label.btn-succes(for="members") Учасники проекта
+                select.btn-succes(id="members")
+                    option #{user.email}
+                        if projectUsers
+                            for use in projectUsers
+                                option #{use.email}
+                        else
+                            option
+                                |None
+            .col-md-5
+            form.form-inline#search
+                label.btn-succes(for="searchInput") Добавить учасника
+                input.form-control(type="text" id="searchInput" name="searchPerson")
+                input(type="hidden" value=ownerProject name="ownerProject")
+                button.btn.btn-succes#btn-problem(type='button' onclick="$('#search').submit()") Найти
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
@@ -24,7 +42,7 @@ block content
                                 h4 На проверку
                             td(width='25%')
                                 h4 Закрытые
-                    tbody
+                    tbody#tbody
                         each v in tasks
                             if v.status === 'waiting'
                                 tr
@@ -93,22 +111,27 @@ block content
                         span(aria-hidden='true') ×
                     h4.modal-title Новая задача
                 .modal-body
+<<<<<<< HEAD
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
                         input(type="hidden" name="ownProject" value=ownProject)
+=======
+                    form(id="create-form" enctype="multipart/form-data" class="form-horizontal" method="POST")
+                        input(type="hidden" value=ownerProject name="ownerProject")
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
                         label(for='description') Описание задачи
                         textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
-                        label(for='InputFile') вложить скриншот
+                        label(for='InputFile') Вложить скриншот
                         input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
 
-                        label(for='priority') приоритет задачи
+                        label(for='priority') Приоритет задачи
                         select#priority.inline(name='priority')
-                            option(value='обычный', selected='selected') обычный
-                            option(value='высокий') высокий
-                            option(value='критичный') критичный
+                            option(value='Обычный', selected='selected') Обычный
+                            option(value='Высокий') Высокий
+                            option(value='Критичный') Критичный
                 .modal-footer
                     button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-info(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-danger(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
@@ -131,8 +154,41 @@ block content
                 '//www.tinymce.com/css/codepen.min.css'
             ]
         });
-
+        // чтоби работал редактор кода при создании задачи
+        $(document).on('focusin', function (e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
         $(function () {
+
+            var width = $('body > div.container-fluid > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)').width();
+            $('.taskCard').css('width', width);
+            $(".droppable").droppable({
+                accept: '.draggable',
+                hoverClass: "drop-hover",
+                drop: function (event, ui) {
+                    $(this).append(ui.draggable);
+                    $.ajax({
+                        method: "POST",
+                        url: "/change-state",
+                        data: {id: ui.draggable.data('id'), status: $(this).data('status')}
+                    })
+                        .done(function (msg) {
+                            alertify.success("Статус задачи успешно изменен!");
+                        })
+                        .fail(function (msg) {
+                            alertify.error("Случилась ошибка операции!");
+                        })
+                }
+            });
+            $(".draggable").draggable({
+                helper: "clone",
+                axis: "x",
+                cursor: "crosshair",
+                opacity: 0.45
+            });
+
             shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
@@ -146,6 +202,7 @@ block content
             }
             $("#create-form").on('submit', function (form) {
                 tinyMCE.triggerSave();
+                console.log("check");
                 $.ajax({
                     method: "POST",
                     url: "/create",
@@ -154,7 +211,7 @@ block content
                     contentType: false
                 })
                     .done(function (template) {
-                        $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
+                        $("#tbody")
                             .append(template.html)
                     })
                     .fail(function (error) {
@@ -163,6 +220,24 @@ block content
                     .always(function () {
                         $("#myModal").modal("hide");
                     });
+                form.preventDefault();
+            })
+            $("#search").on('submit', function (search) {
+                $.ajax({
+                    method: "POST",
+                    url: "/search",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
+                })
+                        .done(function (template) {
+
+                        })
+                        .fail(function (error) {
+                            // show error message
+                        })
+                        .always(function () {
+                        });
                 form.preventDefault();
             })
         });

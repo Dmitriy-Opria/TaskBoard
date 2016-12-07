@@ -54,6 +54,26 @@ router.get('/login',(req, res)=>{
         res.render("loginform");
     }
 });
+router.get('/contacts',(req, res)=>{
+    "use strict";
+    console.log(req.session.user);
+    if (req.session.user) {
+        User.findById(req.session.user._id, function (err, user) {
+            if (err) {
+                console.error(err);
+                res.statusCode(500);
+            }
+            else {
+                res.render('contacts',{user: user});
+            }
+        });
+
+
+    }
+    else{
+        res.redirect("/register");
+    }
+});
 router.get('/register', (req,res)=>{
     "use strict";
     res.render("registerform");
@@ -72,10 +92,11 @@ router.post('/registerme', (req, res) => {
      });
      */
     "use strict";
+    console.log(req.body);
     User.create({
         name: req.body.userFirstName,
         surname: req.body.userLastName,
-        email: req.body.username,
+        email: req.body.userEmail,
         password: req.body.password
     }, (err, savedObject) => {
         if (err) {
@@ -105,6 +126,7 @@ router.get('/profile',(req,res)=>{
                 if (err) next(err);
                 res.render("profile", {user: person});
             });
+
     }
     else{
         res.redirect("/login");
@@ -112,6 +134,7 @@ router.get('/profile',(req,res)=>{
 });
 /* GET board page. */
 router.get('/board', (req, res) => {
+<<<<<<< HEAD
     console.log(req.query.project);
     if (req.session.user) {
         Task.find({project: mongoose.Types.ObjectId(req.query.project)}, (err, tasks) => {
@@ -123,6 +146,39 @@ router.get('/board', (req, res) => {
                 res.render('index', {user: req.session.user, tasks: tasks, ownProject: req.query.project});
             }
         });
+=======
+    if (req.session.user) {
+        Project
+            .findOne({ _id: req.query.project })
+            .populate('tasks') // only works if we pushed refs to children
+            .exec(function (err, tasks) {
+                if (err) {
+                    console.error(err);
+                    res.statusCode(500);
+                }
+                else {
+                    //console.log(tasks);
+                    Project
+                        .findById(req.query.project)
+                        .populate('users')
+                        .exec(function (err, users) {
+                            if (err) {
+                                console.error(err);
+                                res.statusCode(500);
+                            }
+                            else{
+                                console.log(users);
+                                res.render('index', {user: req.session.user, tasks: tasks.tasks, ownerProject: req.query.project, projectUsers: users.users});
+                            }
+                        });
+                   /*User.find({tasks : req.query.project}.where(req.query.project).in(['tasks']), (err, user) => {
+                        console.log(req.query.project);
+                        console.log(user);
+                    });*/
+                }
+            })
+
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
     }
     else {
         res.redirect("/login");
@@ -142,8 +198,13 @@ router.get('/logout', (req, res) => {
         }
     });
 });
-router.post('/create', upload.array('files', 4), (req, res) => {
+router.post('/create', upload.array('files', 4), (req, res, next) => {
     "use strict";
+
+/*    var headers = req.headers.referer,
+        projectID = headers.split("=");*/
+
+    //console.log(projectID[1]);
     if (req.files.length > 0) {
         let arrayOfTask = [];
         req.files.forEach((elem) => {
@@ -188,7 +249,27 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                         res.status(201).json({html: template});
                     });
                 }
+<<<<<<< HEAD
         })
+=======
+                else {
+                    Project.findOne({_id: req.body.ownerProject}, (err, doc) => {
+                        doc.tasks.push(object);
+                        doc.save((err) => {
+                            if(err){
+                                next(err);
+                            }
+                            else{
+                                res.status(200);
+                            }
+                        });
+                    })
+                }
+                object.dateOfcreation = req.app.locals.performDate(object.dateOfcreation);
+                let template = pug.renderFile(path.join(__dirname, '../models/taskCard.pug'), {task: object});
+                res.status(201).json({html: template});
+            });
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
         })
 
     } else {
@@ -198,6 +279,7 @@ router.post('/create', upload.array('files', 4), (req, res) => {
         }, (err, object) => {
             if (err) {
                 console.error(err);
+<<<<<<< HEAD
             } else {Project.findOne({ownProject: req.body.ownProject}, function (err,project) {
                 if (err){
                     console.error(err);
@@ -212,6 +294,29 @@ router.post('/create', upload.array('files', 4), (req, res) => {
                 }
         })
     }});
+=======
+            }
+            else {
+                Project.findOne({_id: req.body.ownerProject}, (err, doc) => {
+                    doc.tasks.push(object);
+                    doc.save((err) => {
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            res.status(200);
+                        }
+                    });
+                })
+            }
+            object.date = req.app.locals.performDate(object.dateOfcreation);
+            let template = pug.renderFile(path.join(__dirname, '../models/taskCard.pug'), {task: object});
+            res.status(201).json({html: template});
+        });
+    }
+
+});
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
 router.post('/change-state', (req, res) => {
     Task.findById(req.body.id, (err, doc) => {
         if (err) {
@@ -269,7 +374,7 @@ router.post('/change-avatar', upload.array('avatar', 1),function (req, res, next
 });
 router.post('/change-password', function (req, res) {
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
-    req.check('confirmpassword', 'Пароли не совпадают').equals(req.body.password);
+    req.check('confirmPassword', 'Пароли не совпадают').equals(req.body.password);
 
     var errors = req.validationErrors();
     User.findById(req.session.user._id, function (err, person) {
@@ -278,7 +383,7 @@ router.post('/change-password', function (req, res) {
             res.status(500).json({errInfo: "Ошибка!"});
         }
         else {
-            if (person.password === req.body.oldpassword) {
+            if (person.password === req.body.oldPassword) {
                 if (!errors) {
                     User.findByIdAndUpdate(req.session.user._id, {
                             $set: {
@@ -314,8 +419,8 @@ router.post('/change-password', function (req, res) {
 router.post('/change-info', function (req, res) {
     User.findByIdAndUpdate(req.session.user._id, {
             $set: {
-                name: req.body.name,
-                surname: req.body.surname
+                name: req.body.userFirstName,
+                surname: req.body.userLastName
             }
         },
         {new: true},
@@ -330,22 +435,17 @@ router.post('/change-info', function (req, res) {
                         res.statusCode(500);
                     }
                     else {
-                        res.status(201).json({info: info});
+                        res.sendStatus(200);
                     }
                 });
             }
         });
 });
 router.post('/change-contacts', function (req, res) {
-    req.check('contemail','Неверный e-mail').isEmail();
-
-    var errors = req.validationErrors();
-    if(!errors){
         User.findByIdAndUpdate(req.session.user._id, {
                 $set: {
-                    email: req.body.contemail,
-                    tel: req.body.conttel,
-                    skype: req.body.skype
+                    tel: req.body.userTelephone,
+                    skype: req.body.userSkype
                 }
             },
             {new: true},
@@ -360,22 +460,19 @@ router.post('/change-contacts', function (req, res) {
                             res.statusCode(500);
                         }
                         else {
-                            res.status(201).json({cont: cont});
+                            res.sendStatus(200);
                         }
                     });
                 }
             });
-    }
-    else{
-        res.status(500).json({errInfo: errors});
-    }
+
 
 });
 router.get('/task/:id', (req, res, next) => {
 
     Task.findById(req.params.id, (err, doc) => {
         if (err) next(err);
-        res.render('taskdesk', {task: doc})
+        res.render('taskdesk', {task: doc});
     })
 });
 router.post('/remove', (req, res) => {
@@ -418,23 +515,62 @@ router.post('/remove', (req, res) => {
             });
         }
     })
+<<<<<<< HEAD
 });*/
+=======
+});
+router.post('/search', (req, res) => {
+    "use strict";
+    Project.findById(req.body.ownerProject, (err, project) => {
+            if (err) {
+                res.status(500).json({errInfo: "Проект был удален!"});
+            }
+            else {
+                if(project.owner_id==req.session.user._id){
+                    User.findOne({email : req.body.searchPerson}, (err, user) => {
+                        if (user!==null) {
+                            user.projects.push(req.body.ownerProject);
+                            user.save((err) => {
+                                if(err){
+                                    res.status(500).json({errInfo: "Ошибка записи пользователя!"});
+                                }
+                                else{
+                                    Project.findById(req.body.ownerProject, (err, project) => {
+                                        project.users.push(user._id);
+                                        project.save((err) => {
+                                            if(err){
+                                                res.status(500).json({errInfo: "Ошибка записи проекта!"});
+                                            }
+                                            else{
+
+                                                res.sendStatus(200);
+                                            }
+                                        })
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                        }
+                    })
+                }
+                else{
+                    res.status(500).json({errInfo: "Вы не являетесь автором этого проекта!"});
+                }
+            }
+        })
+    //if(req.body.ownerProject==req.session.user._id){}
+
+});
+
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
-    /*
-     const ProjectModel = new Schema({
-     owner_id: { type: Schema.Types.ObjectId, ref: 'User' },
-     name:  String,
-     cover: { type: String, default: '/images/dc.png' },
-     dateOfcreation:  { type: Date, default: Date.now },
-     description:  String,
-     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
-     });
-     */
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
     req.checkBody('projectdescription', 'Invalid postparam').notEmpty().isLength({max: 255});
     if (req.file) {
-        if (req.file.size > 8192) next("размер обложки проекта слишком большой (8кб максимум)");
+        if (req.file.size > 8388608) next("Размер обложки проекта слишком большой (8мб максимум)");
         const newFileName = Date.now() + req.file.originalname;
         fs.readFile(req.file.path, function (err, content) {
             if (err) {
@@ -447,6 +583,7 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
                     }
                     else {
                         Project.create({
+                            owner_id : req.session.user._id,
                             name: req.body.projectname,
                             description: req.body.projectdescription,
                             cover: 'images/covers/' + newFileName
@@ -469,6 +606,32 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
             }
         })
     }
+    else{
+        Project.create({
+            owner_id : req.session.user._id,
+            name: req.body.projectname,
+            description: req.body.projectdescription,
+            cover: 'images/dc.png'
+        }, (err, project) => {
+            if (err) {
+                next(err);
+            }
+            else {
+                User.findOne({_id: req.session.user._id}, (err, doc) => {
+                    doc.projects.push(project);
+                    doc.save((err, updatedDoc) => {
+                        next(err);
+                        res.redirect('/profile');
+                    });
+                })
+            }
+        })
+    }
+
+
+
+
+
 });
 
 module.exports = router;

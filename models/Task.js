@@ -23,8 +23,8 @@ const UserModel = new Schema({
     surname: String,
     avatar:{ type: String, default: '/images/avatars/no-avatar_jpg.jpg' },
     email:  String,
-    tel: { type: String, default: '-'},
-    skype: { type: String, default: '-'},
+    tel: String,
+    skype: String,
     password: String,
     tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
     projects: [{type: Schema.Types.ObjectId, ref: 'Project'}]
@@ -40,7 +40,8 @@ const ProjectModel = new Schema({
     cover: {type: String, default: '/images/dc.png'},
     dateOfcreation: {type: Date, default: Date.now},
     description: String,
-    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}]
+    tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
+    users: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');

@@ -81,6 +81,7 @@ passport.use(new LocalStrategy({
                 return done(null, false, {message: 'user not found'});
             }
             return done(null, user);
+
         })
     }
 ));
