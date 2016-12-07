@@ -143,7 +143,6 @@ router.get('/logout', (req, res) => {
 router.post('/create', upload.array('files', 4), (req, res, next) => {
     "use strict";
 
-    console.log(req.body);
 /*    var headers = req.headers.referer,
         projectID = headers.split("=");*/
 
@@ -212,7 +211,7 @@ router.post('/create', upload.array('files', 4), (req, res, next) => {
                     doc.tasks.push(object);
                     doc.save((err) => {
                         if(err){
-                            next(err);
+                            console.log(err);
                         }
                         else{
                             res.status(200);
@@ -428,16 +427,6 @@ router.post('/login', (req, res) => {
 });
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
-    /*
-     const ProjectModel = new Schema({
-     owner_id: { type: Schema.Types.ObjectId, ref: 'User' },
-     name:  String,
-     cover: { type: String, default: '/images/dc.png' },
-     dateOfcreation:  { type: Date, default: Date.now },
-     description:  String,
-     tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }]
-     });
-     */
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
     req.checkBody('projectdescription', 'Invalid postparam').notEmpty().isLength({max: 255});
     if (req.file) {
