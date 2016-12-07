@@ -23,3 +23,24 @@ block content
                 .form-group
                     button(type="reset" class="btn btn-default") Очистить
                     button(type="submit" class="btn btn-default") Зарегистрироваться
+script.
+    $("#search").on('submit', function (search) {
+        $.ajax({
+            method: "POST",
+            url: "/search",
+            data: $(this).serialize(),
+            processData: false
+        })
+                .done(function () {
+                    alertify.success("Вы успешно зарегестрированы!");
+
+                })
+                .fail(function (errInfo) {
+                    console.log(errInfo.responseJSON.errInfo);
+                    alertify.error(errInfo.responseJSON.errInfo);
+                })
+                .always(function () {
+                });
+        form.preventDefault();
+    })
+    });

@@ -226,6 +226,7 @@ block content
                 })
                         .done(function () {
                             alertify.success("Учасник добавлен!");
+                            window.location.replace("/board");
                         })
                         .fail(function (errInfo) {
                             console.log(errInfo.responseJSON.errInfo);

@@ -66,28 +66,36 @@ router.post('/registerme', (req, res) => {
      */
     "use strict";
     console.log(req.body);
-    User.create({
-        name: req.body.userFirstName,
-        surname: req.body.userLastName,
-        email: req.body.userEmail,
-        password: req.body.password
-    }, (err, savedObject) => {
-        if (err) {
-            console.error(err);
-        }
-        else {
-            req.session.user = savedObject;
-            req.session.save((err) => {
+    User.findOne({email : req.body.userEmail}, (err, user) => {
+        if(!user){
+            User.create({
+                name: req.body.userFirstName,
+                surname: req.body.userLastName,
+                email: req.body.userEmail,
+                password: req.body.password
+            }, (err, savedObject) => {
                 if (err) {
                     console.error(err);
                 }
                 else {
-                    console.log(savedObject);
-                    res.redirect("/profile");
+                    req.session.user = savedObject;
+                    req.session.save((err) => {
+                        if (err) {
+                            console.error(err);
+                        }
+                        else {
+                            console.log(savedObject);
+                            res.redirect("/profile");
+                        }
+                    });
                 }
-            });
+            })
         }
-    })
+        else{
+            res.status(500).json({errInfo: "Пользователь с таким е-мейлом существует!"});
+        }
+        });
+
 });
 router.get('/profile',(req,res)=>{
     "use strict";
@@ -457,7 +465,6 @@ router.post('/search', (req, res) => {
                         var simmilars = underscore.find(project.users,function (personFind) {
                             return personFind.toString()===user._id.toString()
                         });
-                        console.log(simmilars);
                         if(!simmilars) {
                             if (user !== null) {
                                 user.projects.push(req.body.ownerProject);
