@@ -24,7 +24,7 @@ body {
     overflow-x:hidden;
 }
 
-hi,h2,h3,h4,h5,h6 {
+h1,h2,h3,h5,h6 {
     color:#333;
     line-height:1.1em;
 }
@@ -86,6 +86,21 @@ a:hover {
 }
 
 .btn-default:hover {
+    background-color:transparent!important;
+    color:#ED502E;
+    border-color: transparent!important;
+}
+.btn-succes{
+    color: #333;
+    background-color: transparent;
+    border-color: transparent!important;
+    text-transform:uppercase!important;
+    font-size:16px;
+    margin-top: 10px;
+    padding: 12px;
+    font-weight: 500;
+}
+.btn-succes:hover {
     background-color:transparent!important;
     color:#ED502E;
     border-color: transparent!important;
@@ -1091,6 +1106,22 @@ a.scrollup:hover{
     text-shadow: none;
 }
 #myModal,
-.form-inline{
+.form-inline,
+label,
+select{
     color: #333;
 }
+#btn-problem{
+    margin-top: 0px;
+}
+thead td{
+    text-align: center;
+    color: #fff;
+    background: #292929;
+    text-transform:uppercase;
+}
+thead td:hover{
+    text-align: center;
+    color: #ED502E;
+}
+

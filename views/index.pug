@@ -10,14 +10,25 @@ block content
                 img(alt='', src=user.avatar)
             .card-info
                 span.card-title #{user.name}
-        .col-md-4
-            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-        .col-md-4
-        .col-md-4
-        form.form-inline#search
-            label(for="searchF") Добавить учасника проекта
-            input.form-control(type="text" id="searchF")
-            button.btn.btn-success(type='button') Найти
+        .row
+            .col-md-2
+                button.btn.btn-succes(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            .col-md-5
+                label.btn-succes(for="members") Учасники проекта
+                select.btn-succes(id="members")
+                    option #{user.email}
+                        if projectUsers
+                            for use in projectUsers
+                                option #{use.email}
+                        else
+                            option
+                                |None
+            .col-md-5
+            form.form-inline#search
+                label.btn-succes(for="searchInput") Добавить учасника
+                input.form-control(type="text" id="searchInput" name="searchPerson")
+                input(type="hidden" value=ownerProject name="ownerProject")
+                button.btn.btn-succes#btn-problem(type='button' onclick="$('#search').submit()") Найти
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
@@ -138,41 +149,8 @@ block content
                 '//www.tinymce.com/css/codepen.min.css'
             ]
         });
-        // чтоби работал редактор кода при создании задачи
-        $(document).on('focusin', function (e) {
-            if ($(event.target).closest(".mce-window").length) {
-                e.stopImmediatePropagation();
-            }
-        });
+
         $(function () {
-
-            var width = $('body > div.container-fluid > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)').width();
-            $('.taskCard').css('width', width);
-            $(".droppable").droppable({
-                accept: '.draggable',
-                hoverClass: "drop-hover",
-                drop: function (event, ui) {
-                    $(this).append(ui.draggable);
-                    $.ajax({
-                        method: "POST",
-                        url: "/change-state",
-                        data: {id: ui.draggable.data('id'), status: $(this).data('status')}
-                    })
-                        .done(function (msg) {
-                            alertify.success("Статус задачи успешно изменен!");
-                        })
-                        .fail(function (msg) {
-                            alertify.error("Случилась ошибка операции!");
-                        })
-                }
-            });
-            $(".draggable").draggable({
-                helper: "clone",
-                axis: "x",
-                cursor: "crosshair",
-                opacity: 0.45
-            });
-
             shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
