@@ -65,36 +65,47 @@ router.post('/registerme', (req, res) => {
      });
      */
     "use strict";
-    console.log(req.body);
-    User.findOne({email : req.body.userEmail}, (err, user) => {
-        if(!user){
-            User.create({
-                name: req.body.userFirstName,
-                surname: req.body.userLastName,
-                email: req.body.userEmail,
-                password: req.body.password
-            }, (err, savedObject) => {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    req.session.user = savedObject;
-                    req.session.save((err) => {
-                        if (err) {
-                            console.error(err);
-                        }
-                        else {
-                            console.log(savedObject);
-                            res.redirect("/profile");
-                        }
-                    });
-                }
-            })
-        }
-        else{
-            res.status(500).json({errInfo: "Пользователь с таким е-мейлом существует!"});
-        }
+    req.check('userFirstName', 'Длина имени должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userLastName', 'Длина фамилии должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userEmail', 'Введите действующий e-mail').isEmail();
+    req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
+
+    var errors = req.validationErrors();
+    console.log(errors);
+    if(errors.length < 3) {
+        User.findOne({email: req.body.userEmail}, (err, user) => {
+            if (!user) {
+                User.create({
+                    name: req.body.userFirstName,
+                    surname: req.body.userLastName,
+                    email: req.body.userEmail,
+                    password: req.body.password
+                }, (err, savedObject) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    else {
+                        req.session.user = savedObject;
+                        req.session.save((err) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                            else {
+                                console.log(savedObject);
+                                res.redirect("/profile");
+                            }
+                        });
+                    }
+                })
+            }
+            else {
+                res.status(500).json({errInfo: "Пользователь с таким е-мейлом существует!"});
+            }
         });
+    }
+    else{
+        res.status(500).json({errInfo: "Введите коректные данные!"});
+    }
 
 });
 router.get('/profile',(req,res)=>{
@@ -351,7 +362,10 @@ router.post('/change-password', function (req, res) {
 
 });
 router.post('/change-info', function (req, res) {
-    User.findByIdAndUpdate(req.session.user._id, {
+    req.check('userFirstName', 'Длина имени должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userLastName', 'Длина фамилии должна быть 2-12 символов').isLength({min: 2, max: 12});
+    var errors = req.validationErrors();
+    if(!errors) {User.findByIdAndUpdate(req.session.user._id, {
             $set: {
                 name: req.body.userFirstName,
                 surname: req.body.userLastName
@@ -374,8 +388,17 @@ router.post('/change-info', function (req, res) {
                 });
             }
         });
+    }
+    else{
+        res.status(500).json({errInfo: "Длина имени или фамилии должна быть 2-12 символов"});
+    }
+
 });
 router.post('/change-contacts', function (req, res) {
+    req.check('userTelephone', 'Длина телефона должна быть 3-16 символов').isLength({min: 3, max: 16});
+    req.check('userSkype', 'Длина Skype должна быть 3-16 символов').isLength({min: 3, max: 16});
+    var errors = req.validationErrors();
+    if(!errors) {
         User.findByIdAndUpdate(req.session.user._id, {
                 $set: {
                     tel: req.body.userTelephone,
@@ -398,7 +421,12 @@ router.post('/change-contacts', function (req, res) {
                         }
                     });
                 }
-            });
+            })
+    }
+    else{
+        res.status(500).json({errInfo: "Длина телефона или Skypa должна быть 3-16 символов"});
+    }
+
 
 
 });
@@ -506,7 +534,6 @@ router.post('/search', (req, res) => {
     //if(req.body.ownerProject==req.session.user._id){}
 
 });
-
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});

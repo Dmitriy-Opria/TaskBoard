@@ -134,3 +134,12 @@ a {
   display: inline-block !important;
   margin: 15px;
 }
+form .form-group .error{
+  border-color:#ED502E;
+}
+form .form-group .error:nth-of-type(2){
+  color:#ED502E;
+  display: block;
+  margin-bottom: -17px;
+}
+
