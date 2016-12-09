@@ -9,6 +9,7 @@ const express = require('express'),
     Project = require('../models/Task').Project,
     pug = require('pug'),
     async = require('async'),
+    underscore = require('underscore'),
     mongoose = require('mongoose');
 
 const upload = multer({dest: os.tmpdir()});// save to system tmp dir
@@ -64,29 +65,48 @@ router.post('/registerme', (req, res) => {
      });
      */
     "use strict";
-    console.log(req.body);
-    User.create({
-        name: req.body.userFirstName,
-        surname: req.body.userLastName,
-        email: req.body.userEmail,
-        password: req.body.password
-    }, (err, savedObject) => {
-        if (err) {
-            console.error(err);
-        }
-        else {
-            req.session.user = savedObject;
-            req.session.save((err) => {
-                if (err) {
-                    console.error(err);
-                }
-                else {
-                    console.log(savedObject);
-                    res.redirect("/profile");
-                }
-            });
-        }
-    })
+    req.check('userFirstName', 'Длина имени должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userLastName', 'Длина фамилии должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userEmail', 'Введите действующий e-mail').isEmail();
+    req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
+
+    var errors = req.validationErrors();
+    console.log(errors);
+    if(errors.length < 3) {
+        User.findOne({email: req.body.userEmail}, (err, user) => {
+            if (!user) {
+                User.create({
+                    name: req.body.userFirstName,
+                    surname: req.body.userLastName,
+                    email: req.body.userEmail,
+                    password: req.body.password
+                }, (err, savedObject) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    else {
+                        req.session.user = savedObject;
+                        req.session.save((err) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                            else {
+                                console.log(savedObject);
+                                res.redirect("/profile");
+                            }
+                        });
+                    }
+                })
+            }
+            else {
+                res.status(500).json({errInfo: "Пользователь с таким е-мейлом существует!"});
+            }
+        });
+    }
+    else{
+        res.status(500).json({errInfo: "Введите коректные данные!"});
+    }
+
 });
 router.get('/profile',(req,res)=>{
     "use strict";
@@ -187,6 +207,7 @@ router.post('/create', upload.array('files', 4), (req, res, next) => {
 
         async.parallel(arrayOfTask, (err, results) => {
             Task.create({
+                project: req.body.ownerProject,
                 description: req.body.description,
                 priority: req.body.priority,
                 images: results
@@ -215,7 +236,10 @@ router.post('/create', upload.array('files', 4), (req, res, next) => {
         })
 
     } else {
+
+        console.log(req.body);
         Task.create({
+            project: req.body.ownerProject,
             description: req.body.description,
             priority: req.body.priority
         }, (err, object) => {
@@ -342,7 +366,10 @@ router.post('/change-password', function (req, res) {
 
 });
 router.post('/change-info', function (req, res) {
-    User.findByIdAndUpdate(req.session.user._id, {
+    req.check('userFirstName', 'Длина имени должна быть 2-12 символов').isLength({min: 2, max: 12});
+    req.check('userLastName', 'Длина фамилии должна быть 2-12 символов').isLength({min: 2, max: 12});
+    var errors = req.validationErrors();
+    if(!errors) {User.findByIdAndUpdate(req.session.user._id, {
             $set: {
                 name: req.body.userFirstName,
                 surname: req.body.userLastName
@@ -365,8 +392,17 @@ router.post('/change-info', function (req, res) {
                 });
             }
         });
+    }
+    else{
+        res.status(500).json({errInfo: "Длина имени или фамилии должна быть 2-12 символов"});
+    }
+
 });
 router.post('/change-contacts', function (req, res) {
+    req.check('userTelephone', 'Длина телефона должна быть 3-16 символов').isLength({min: 3, max: 16});
+    req.check('userSkype', 'Длина Skype должна быть 3-16 символов').isLength({min: 3, max: 16});
+    var errors = req.validationErrors();
+    if(!errors) {
         User.findByIdAndUpdate(req.session.user._id, {
                 $set: {
                     tel: req.body.userTelephone,
@@ -389,7 +425,12 @@ router.post('/change-contacts', function (req, res) {
                         }
                     });
                 }
-            });
+            })
+    }
+    else{
+        res.status(500).json({errInfo: "Длина телефона или Skypa должна быть 3-16 символов"});
+    }
+
 
 
 });
@@ -400,22 +441,22 @@ router.get('/task/:id', (req, res, next) => {
         res.render('taskdesk', {task: doc});
     })
 });
-router.post('/remove', (req, res) => {
+router.post('/removeTask', (req, res) => {
     "use strict";
     if (!req.body.id) res.sendStatus(400);
     Task.findById(req.body.id, function (err, doc) {
         var filesArray = doc.images;
         for (var i = 0; i < filesArray.length; i++) {
             fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
-                if (err) res.sendStatus(500);
+                res.status(500).json({id: doc.project});
             });
         }
         Task.remove({_id: req.body.id}, function (err) {
             if (err) {
-                res.sendStatus(500);
+                res.status(500).json({id: doc.project});
             }
             else {
-                res.sendStatus(200);
+                res.status(200).json({id: doc.project});
             }
         })
 
@@ -449,31 +490,43 @@ router.post('/search', (req, res) => {
             }
             else {
                 if(project.owner_id==req.session.user._id){
-                    User.findOne({email : req.body.searchPerson}, (err, user) => {
-                        if (user!==null) {
-                            user.projects.push(req.body.ownerProject);
-                            user.save((err) => {
-                                if(err){
-                                    res.status(500).json({errInfo: "Ошибка записи пользователя!"});
-                                }
-                                else{
-                                    Project.findById(req.body.ownerProject, (err, project) => {
-                                        project.users.push(user._id);
-                                        project.save((err) => {
-                                            if(err){
-                                                res.status(500).json({errInfo: "Ошибка записи проекта!"});
-                                            }
-                                            else{
 
-                                                res.sendStatus(200);
-                                            }
-                                        })
-                                    });
-                                }
-                            });
+
+                    //if(project.users.)
+                    User.findOne({email : req.body.searchPerson}, (err, user) => {
+                        var simmilars = underscore.find(project.users,function (personFind) {
+                            return personFind.toString()===user._id.toString()
+                        });
+                        if(!simmilars) {
+                            if (user !== null) {
+                                user.projects.push(req.body.ownerProject);
+                                user.save((err) => {
+                                    if (err) {
+                                        res.status(500).json({errInfo: "Ошибка записи пользователя!"});
+                                    }
+                                    else {
+                                        Project.findById(req.body.ownerProject, (err, project) => {
+                                            project.users.push(user._id);
+                                            project.save((err) => {
+                                                if (err) {
+                                                    res.status(500).json({errInfo: "Ошибка записи проекта!"});
+                                                }
+                                                else {
+
+                                                    res.sendStatus(200);
+                                                }
+                                            })
+                                        });
+                                    }
+                                });
+                            }
+
+                            else {
+                                res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                            }
                         }
-                        else {
-                            res.status(500).json({errInfo: "Такого пользователя не существует!"});
+                        else{
+                            res.status(500).json({errInfo: "Пользователь уже добавлен к проекту!"});
                         }
                     })
                 }
@@ -485,7 +538,6 @@ router.post('/search', (req, res) => {
     //if(req.body.ownerProject==req.session.user._id){}
 
 });
-
 router.post('/newproject', upload.single('cover'), (req, res, next) => {
     "use strict";
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
@@ -554,5 +606,37 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
 
 
 });
+
+router.post('/removeProject', (req, res) => {
+    "use strict";
+    if (!req.body.id) res.sendStatus(400);
+    Project.findById(req.body.id, function (err, doc) {
+        console.log(doc.cover);
+        console.log('/images/dc.png');
+        if (doc.cover == 'images/dc.png') {
+            Project.remove({_id: req.body.id}, function (err) {
+                if (err) {
+                    res.status(500).json({id: doc.project});
+                }
+                else {
+                    res.status(200).json({id: doc.project});
+                }
+            });
+        }
+        else {
+            fs.unlink(path.join(__dirname, '../public/') + doc.cover, (err) => {
+                Project.remove({_id: req.body.id}, function (err) {
+                    if (err) {
+                        res.status(500).json({id: doc.project});
+                    }
+                    else {
+                        res.status(200).json({id: doc.project});
+                    }
+                })
+            });
+        }
+    });
+});
+
 
 module.exports = router;

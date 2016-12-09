@@ -34,16 +34,32 @@ function removeTask(taskID) {
     "use strict";
     $.ajax({
         method: "POST",
-        url: "/remove",
+        url: "/removeTask",
         data: {id: taskID}
     })
-        .done(function (msg) {
+        .done(function (id) {
             alertify.success("Задача успешно удалена");
-            window.location.replace("/board");
+            window.location.replace('/board?project=' + id.id);
+        })
+        .fail(function (id) {
+            alertify.error("Случилась ошибка операции!");
+            window.location.replace('/board?project=' + id.id);
+        })
+}
+function removeProject(projectID) {
+    "use strict";
+    $.ajax({
+        method: "POST",
+        url: "/removeProject",
+        data: {id: projectID}
+    })
+        .done(function (msg) {
+            alertify.success("Проект успешно удален");
+            window.location.replace("/profile");
         })
         .fail(function (msg) {
             alertify.error("Случилась ошибка операции!");
-            window.location.replace("/board");
+            window.location.replace("/profile");
         })
 }
 function fireLogout() {

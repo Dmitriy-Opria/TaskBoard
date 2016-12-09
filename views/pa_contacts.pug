@@ -17,6 +17,28 @@
                 button(type="reset" class="btn btn-default") Очистить
                 button(type="submit" class="btn btn-default to-save") Сохранить
 script.
+    $("#cont").validate({
+        rules: {
+            userTelephone: {
+                minlength: 3,
+                maxlength: 16
+            },
+            userSkype: {
+                minlength: 3,
+                maxlength: 16
+            }
+        },
+        messages: {
+            userTelephone: {
+                minlength: "Минимальная длина телефона 3 символа",
+                maxlength: "Максимальная длина телефона 16 символа"
+            },
+            userSkype: {
+                minlength: "Минимальная длина Skype 3 символа",
+                maxlength: "Максимальная длина Skype 16 символа"
+            }
+        }
+    })
     $("#cont").on('submit', function (e) {
         $.ajax({
             method: "POST",
@@ -29,8 +51,7 @@ script.
                 window.location.replace("/profile");
             })
             .fail(function (errInfo) {
-                alertify.error("Контакты  не изменены!");
-                window.location.replace("/profile");
+                alertify.error(errInfo.responseJSON.errInfo);
             })
             .always(function () {
             });

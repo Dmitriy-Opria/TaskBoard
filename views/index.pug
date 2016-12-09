@@ -221,15 +221,16 @@ block content
                 $.ajax({
                     method: "POST",
                     url: "/search",
-                    data: new FormData(this),
-                    processData: false,
-                    contentType: false
+                    data: $(this).serialize(),
+                    processData: false
                 })
-                        .done(function (template) {
-
+                        .done(function () {
+                            alertify.success("Учасник добавлен!");
+                            window.location.replace("/board");
                         })
-                        .fail(function (error) {
-                            // show error message
+                        .fail(function (errInfo) {
+                            console.log(errInfo.responseJSON.errInfo);
+                            alertify.error(errInfo.responseJSON.errInfo);
                         })
                         .always(function () {
                         });

@@ -38,6 +38,12 @@ block content
                                             h5=val.description
                                             p
                                                 a.btn.btn-warning(href='/board?project=' + val._id, role='button') Перейти к доске проекта
+                                            p
+                                                a.btn.btn-danger(href="javascript:removeProject('"+val._id+"');" ) Удалить проект
+
+                                                //a.btn.btn-danger(type='button', data-toggle="modal" data-target="#deleteModal") Удалить проект
+                                            //include delete
+
                             .col-sm-6.col-md-4.col-lg-3
                                 .thumbnail
                                     img(src='images/addP.png', alt='...')
@@ -51,7 +57,7 @@ block content
                     #tab3.tab-pane.fade.in.text-center
                         .btn-pref.btn-group-vertical(role='group', aria-label='...')
                             .btn-group(role='group')
-                                button.btn.btn-primary(type='button', href='#tab4', data-toggle='tab')
+                                button.btn.btn-default(type='button', href='#tab4', data-toggle='tab')
                                     span.glyphicon.glyphicon-paperclip.text-left(aria-hidden='true')
                                         |&nbsp;
                                     span.hidden-xs Имя и Фамилия
