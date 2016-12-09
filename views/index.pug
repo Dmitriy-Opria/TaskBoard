@@ -111,8 +111,13 @@ block content
                         span(aria-hidden='true') ×
                     h4.modal-title Новая задача
                 .modal-body
+<<<<<<< HEAD
+                    form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
+                        input(type="hidden" name="ownProject" value=ownProject)
+=======
                     form(id="create-form" enctype="multipart/form-data" class="form-horizontal" method="POST")
                         input(type="hidden" value=ownerProject name="ownerProject")
+>>>>>>> 36ad95cfe1ac5ababb8deee7b6e1227659687761
                         label(for='description') Описание задачи
                         textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
