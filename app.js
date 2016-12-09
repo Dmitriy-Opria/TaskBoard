@@ -113,6 +113,15 @@ app.all('\/login|\/registerme', (req, res, next) => {
     req.checkBody('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
     next();
 });
+
+app.all('\/task|\/profile|\/project|\/taskdesk|\/contacts', (req, res, next) => {
+    if(req.session.user){
+        next();
+    }
+    else{
+        res.redirect("/");
+    }
+});
 app.use('/', routes);
 //app.use('/users', users);
 
