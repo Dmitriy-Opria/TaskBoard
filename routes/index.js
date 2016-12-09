@@ -1,16 +1,14 @@
-const express = require('express'),
-    router = express.Router(),
-    os = require('os'),
-    fs = require('fs'),
-    path = require('path'),
-    multer = require('multer'),
-    Task = require('../models/Task').Task,
-    User = require('../models/Task').User,
-    Project = require('../models/Task').Project,
-    pug = require('pug'),
-    async = require('async'),
-    underscore = require('underscore'),
-    mongoose = require('mongoose');
+import express from "express";
+import os from "os";
+import fs from "fs";
+import path from "path";
+import multer from "multer";
+import {Task, User, Project} from "../models/Task";
+import pug from "pug";
+import async from "async";
+import underscore from "underscore";
+import mongoose from "mongoose";
+const router = express.Router();
 
 const upload = multer({dest: os.tmpdir()});// save to system tmp dir
 
@@ -51,7 +49,7 @@ router.get('/register', (req,res)=>{
     "use strict";
     res.render("registerform");
 });
-router.post('/registerme', (req, res,) => {
+router.post('/registerme', (req, res) => {
     /*
      const UserModel = new Schema({
      name:  String,
@@ -146,7 +144,6 @@ router.get('/board', (req, res) => {
                                 res.statusCode(500);
                             }
                             else{
-                                console.log(users);
                                 res.render('index', {user: req.session.user, tasks: tasks.tasks, ownerProject: req.query.project, projectUsers: users.users});
                             }
                         });
@@ -512,8 +509,7 @@ router.post('/search', (req, res) => {
                                                     res.status(500).json({errInfo: "Ошибка записи проекта!"});
                                                 }
                                                 else {
-
-                                                    res.sendStatus(200);
+                                                    res.status(200).json({emailInfo: req.body.searchPerson});
                                                 }
                                             })
                                         });
@@ -558,8 +554,9 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
                         Project.create({
                             owner_id : req.session.user._id,
                             name: req.body.projectname,
+                            cover: 'images/covers/' + newFileName,
                             description: req.body.projectdescription,
-                            cover: 'images/covers/' + newFileName
+                            users: req.session.user._id
                         }, (err, project) => {
                             if (err) {
                                 next(err);
@@ -583,8 +580,9 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
         Project.create({
             owner_id : req.session.user._id,
             name: req.body.projectname,
+            cover: 'images/dc.png',
             description: req.body.projectdescription,
-            cover: 'images/dc.png'
+            users: req.session.user._id
         }, (err, project) => {
             if (err) {
                 next(err);
