@@ -1,0 +1,15 @@
+#deleteModal.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                h4.modal-title Вы действительно ходите удалить данный проект?
+            .modal-footer
+                a.btn.btn-default(type='button', data-dismiss='modal') Отмена
+                form(id="info" action="/change-info" method="POST")
+                    input(type="hidden" value=val._id name="ownerProject")
+                    .btn.btn-default(type='submit') Удалить
+
+
+

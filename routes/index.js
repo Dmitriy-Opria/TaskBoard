@@ -207,6 +207,7 @@ router.post('/create', upload.array('files', 4), (req, res, next) => {
 
         async.parallel(arrayOfTask, (err, results) => {
             Task.create({
+                project: req.body.ownerProject,
                 description: req.body.description,
                 priority: req.body.priority,
                 images: results
@@ -235,7 +236,10 @@ router.post('/create', upload.array('files', 4), (req, res, next) => {
         })
 
     } else {
+
+        console.log(req.body);
         Task.create({
+            project: req.body.ownerProject,
             description: req.body.description,
             priority: req.body.priority
         }, (err, object) => {
@@ -437,22 +441,22 @@ router.get('/task/:id', (req, res, next) => {
         res.render('taskdesk', {task: doc});
     })
 });
-router.post('/remove', (req, res) => {
+router.post('/removeTask', (req, res) => {
     "use strict";
     if (!req.body.id) res.sendStatus(400);
     Task.findById(req.body.id, function (err, doc) {
         var filesArray = doc.images;
         for (var i = 0; i < filesArray.length; i++) {
             fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
-                if (err) res.sendStatus(500);
+                res.status(500).json({id: doc.project});
             });
         }
         Task.remove({_id: req.body.id}, function (err) {
             if (err) {
-                res.sendStatus(500);
+                res.status(500).json({id: doc.project});
             }
             else {
-                res.sendStatus(200);
+                res.status(200).json({id: doc.project});
             }
         })
 
@@ -602,5 +606,37 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
 
 
 });
+
+router.post('/removeProject', (req, res) => {
+    "use strict";
+    if (!req.body.id) res.sendStatus(400);
+    Project.findById(req.body.id, function (err, doc) {
+        console.log(doc.cover);
+        console.log('/images/dc.png');
+        if (doc.cover == 'images/dc.png') {
+            Project.remove({_id: req.body.id}, function (err) {
+                if (err) {
+                    res.status(500).json({id: doc.project});
+                }
+                else {
+                    res.status(200).json({id: doc.project});
+                }
+            });
+        }
+        else {
+            fs.unlink(path.join(__dirname, '../public/') + doc.cover, (err) => {
+                Project.remove({_id: req.body.id}, function (err) {
+                    if (err) {
+                        res.status(500).json({id: doc.project});
+                    }
+                    else {
+                        res.status(200).json({id: doc.project});
+                    }
+                })
+            });
+        }
+    });
+});
+
 
 module.exports = router;
