@@ -51,7 +51,7 @@ router.get('/register', (req,res)=>{
     "use strict";
     res.render("registerform");
 });
-router.post('/registerme', (req, res) => {
+router.post('/registerme', (req, res,) => {
     /*
      const UserModel = new Schema({
      name:  String,
@@ -70,8 +70,8 @@ router.post('/registerme', (req, res) => {
     req.check('userEmail', 'Введите действующий e-mail').isEmail();
     req.check('password', 'Длина пароля должна быть 4-12 символов').isLength({min: 4, max: 12});
 
-    var errors = req.validationErrors();
-    console.log(errors);
+    let errors = req.validationErrors();
+
     if(errors.length < 3) {
         User.findOne({email: req.body.userEmail}, (err, user) => {
             if (!user) {
