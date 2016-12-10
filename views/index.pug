@@ -219,7 +219,7 @@ block content
             $("#search").on('submit', function (search) {
                 $.ajax({
                     method: "POST",
-                    url: "/search",
+                    url: "/searchUser",
                     data: $(this).serialize(),
                     processData: false
                 })
