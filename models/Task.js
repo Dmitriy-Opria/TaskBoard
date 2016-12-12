@@ -3,6 +3,7 @@
  */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+import fs from "fs";
 
 const TaskModel = new Schema({
     project: {type: Schema.Types.ObjectId, ref: 'Project'},
@@ -38,6 +39,31 @@ const ProjectModel = new Schema({
     description: String,
     tasks: [{type: Schema.Types.ObjectId, ref: 'Task'}],
     users: [{type: Schema.Types.ObjectId, ref: 'User'}]
+});
+ProjectModel.pre('remove', function (next) {
+    this.tasks.forEach((id)=> {
+        Task.findById(id, function (err, doc) {
+            var filesArray = doc.images;
+            for (var i = 0; i < filesArray.length; i++) {
+                fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
+                });
+            }
+            Task.remove({_id: id}, function (err) {
+                console.log(doc);
+                Project.findByIdAndUpdate(doc.project, {$pull: {tasks: doc._id}}, function (err) {
+                    User.findByIdAndUpdate(doc.executant_id, {$pull: {projects: doc.project}}, function (err) {
+                        if (doc.executant_id) {
+                            User.findByIdAndUpdate(doc.executant_id, {$pull: {tasks: doc._id}}, function (err) {
+                            })
+                        }
+                    })
+
+                    })
+                })
+            })
+
+        });
+    next();
 });
 
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
