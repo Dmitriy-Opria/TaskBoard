@@ -650,7 +650,25 @@ router.post('/removeTask', (req, res) => {
                 res.status(500).json({id: doc.project});
             }
             else {
-                res.status(200).json({id: doc.project});
+                Project.findByIdAndUpdate(doc.project, {$pull: {tasks: doc._id}}, function(err){
+                    if(err) {
+                        res.status(500).json({id: doc.project});
+                    }
+                    if(doc.executant_id){
+                        User.findByIdAndUpdate(doc.executant_id, {$pull: {tasks: doc._id}}, function(err){
+                            if(err) {
+                                res.status(500).json({id: doc.project});
+                            }
+                            else{
+                                res.status(200).json({id: doc.project});
+                            }
+                    })
+                    }
+                    else{
+                        res.status(200).json({id: doc.project});
+                    }
+
+                });
             }
         })
 
@@ -663,12 +681,19 @@ router.post('/removeProject', (req, res) => {
         console.log(doc.cover);
         console.log('/images/dc.png');
         if (doc.cover == 'images/dc.png') {
-            Project.remove({_id: req.body.id}, function (err) {
+            doc.remove({_id: req.body.id}, function (err) {
                 if (err) {
                     res.status(500).json({id: doc.project});
                 }
                 else {
-                    res.status(200).json({id: doc.project});
+                    Task.findByIdAndUpdate(doc.executant_id, {$pull: {tasks: doc._id}}, function(err) {
+                        if (err) {
+                            res.status(500).json({id: doc.project});
+                        }
+                        else {
+                            res.status(200).json({id: doc.project});
+                        }
+                    })
                 }
             });
         }
@@ -679,7 +704,14 @@ router.post('/removeProject', (req, res) => {
                         res.status(500).json({id: doc.project});
                     }
                     else {
-                        res.status(200).json({id: doc.project});
+                        User.findByIdAndUpdate(doc.executant_id, {$pull: {tasks: doc._id}}, function(err) {
+                            if (err) {
+                                res.status(500).json({id: doc.project});
+                            }
+                            else {
+                                res.status(200).json({id: doc.project});
+                            }
+                        })
                     }
                 })
             });
