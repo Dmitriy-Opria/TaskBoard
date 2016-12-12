@@ -112,8 +112,10 @@ router.get('/profile',(req,res)=>{
         User
             .findById(req.session.user._id)
             .populate('projects') // only works if we pushed refs to children
+            .populate('tasks')
             .exec((err, person) => {
                 if (err) next(err);
+                console.log(person);
                 res.render("profile", {user: person});
             });
 
@@ -435,29 +437,8 @@ router.get('/task/:id', (req, res, next) => {
 
     Task.findById(req.params.id, (err, doc) => {
         if (err) next(err);
-        res.render('taskdesk', {task: doc});
+        res.render('taskdesk', {task: doc, user: req.session.user});
     })
-});
-router.post('/removeTask', (req, res) => {
-    "use strict";
-    if (!req.body.id) res.sendStatus(400);
-    Task.findById(req.body.id, function (err, doc) {
-        var filesArray = doc.images;
-        for (var i = 0; i < filesArray.length; i++) {
-            fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
-                res.status(500).json({id: doc.project});
-            });
-        }
-        Task.remove({_id: req.body.id}, function (err) {
-            if (err) {
-                res.status(500).json({id: doc.project});
-            }
-            else {
-                res.status(200).json({id: doc.project});
-            }
-        })
-
-    });
 });
 router.post('/login', (req, res) => {
     "use strict";
@@ -479,7 +460,7 @@ router.post('/login', (req, res) => {
         }
     })
 });
-router.post('/search', (req, res) => {
+router.post('/searchUser', (req, res) => {
     "use strict";
     Project.findById(req.body.ownerProject, (err, project) => {
             if (err) {
@@ -487,8 +468,6 @@ router.post('/search', (req, res) => {
             }
             else {
                 if(project.owner_id==req.session.user._id){
-
-
                     //if(project.users.)
                     User.findOne({email : req.body.searchPerson}, (err, user) => {
                         var simmilars = underscore.find(project.users,function (personFind) {
@@ -534,7 +513,59 @@ router.post('/search', (req, res) => {
     //if(req.body.ownerProject==req.session.user._id){}
 
 });
-router.post('/newproject', upload.single('cover'), (req, res, next) => {
+router.post('/executeTask', (req, res) => {
+    "use strict"
+    Task.findById(req.body.id, (err, task) => {
+        console.log(task.executant_id);
+        if(!task.executant_id){
+            task.executant_id = req.session.user._id;
+            task.save((err) => {
+                if (err) {
+                    res.status(500).json({errInfo: "Не удалось взять задачу!"});
+                }
+                else {
+                    User
+                        .findById(req.session.user._id)
+                        .populate('tasks')
+                        .exec((err, user) => {
+                            var simmilars = underscore.find(user.tasks,(taskFind) => {
+                                return taskFind._id.toString() === req.body.id.toString()
+                            });
+                            if(!simmilars){
+                                user.tasks.push(req.body.id);
+                                user.save((err) => {
+                                    if (err) {
+                                        res.status(500).json({errInfo: "Не удалось взять задачу!"});
+                                    }
+                                    else {
+                                        res.status(200).json({successInfo: "Задача добавлена в Ваш список задач!"});
+                                    }
+                                });
+                            }
+                            else {
+                                res.status(500).json({errInfo: "Вы уже выполняете эту задачу!"});
+                            }
+                        });
+                }
+            })
+        }
+        else{
+            res.status(500).json({errInfo: "Задача уже выполняется!"});
+        }
+
+
+    })
+
+
+            /*User.findOne({_id: req.session.user._id}, (err, doc) => {
+        doc.tasks.push(req.body.id);
+        doc.save((err, updatedDoc) => {
+            next(err);
+            console.log(updatedDoc);
+        });
+    });*/
+});
+router.post('/newProject', upload.single('cover'), (req, res, next) => {
     "use strict";
     req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
     req.checkBody('projectdescription', 'Invalid postparam').notEmpty().isLength({max: 255});
@@ -604,7 +635,27 @@ router.post('/newproject', upload.single('cover'), (req, res, next) => {
 
 
 });
+router.post('/removeTask', (req, res) => {
+    "use strict";
+    if (!req.body.id) res.sendStatus(400);
+    Task.findById(req.body.id, function (err, doc) {
+        var filesArray = doc.images;
+        for (var i = 0; i < filesArray.length; i++) {
+            fs.unlink(path.join(__dirname, '../public/') + filesArray[i], (err) => {
+                res.status(500).json({id: doc.project});
+            });
+        }
+        Task.remove({_id: req.body.id}, function (err) {
+            if (err) {
+                res.status(500).json({id: doc.project});
+            }
+            else {
+                res.status(200).json({id: doc.project});
+            }
+        })
 
+    });
+});
 router.post('/removeProject', (req, res) => {
     "use strict";
     if (!req.body.id) res.sendStatus(400);
