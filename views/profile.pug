@@ -1,12 +1,10 @@
 extends layout
 block content
-    //Created by alexey-home on 30.11.16.
     .container-fluid
         .col-lg-12.col-sm-6
             .card.hovercard
                 .card-background
                     img.card-bkimg(alt='', src='http://lorempixel.com/100/100/people/9/')
-                    // http://lorempixel.com/850/280/people/9/
                 .useravatar
                     img(alt='', src=user.avatar)
                 .card-info
@@ -24,7 +22,6 @@ block content
                     button#following.btn.btn-default(ype='button', href='#tab3', data-toggle='tab')
                         span.glyphicon.glyphicon-user(aria-hidden='true')
                         .hidden-xs Мои настройки
-
             .well
                 .tab-content
                     #tab1.tab-pane.fade.in.active
@@ -40,10 +37,6 @@ block content
                                                 a.btn.btn-warning(href='/board?project=' + val._id, role='button') Перейти к доске проекта
                                             p
                                                 a.btn.btn-danger(href="javascript:removeProject('"+val._id+"');" ) Удалить проект
-
-                                                //a.btn.btn-danger(type='button', data-toggle="modal" data-target="#deleteModal") Удалить проект
-                                            //include delete
-
                             .col-sm-6.col-md-4.col-lg-3
                                 .thumbnail
                                     img(src='images/addP.png', alt='...')
@@ -51,42 +44,45 @@ block content
                                         h3 Новый проект
                                         p
                                             a.btn.btn-warning(href='#', role='button' data-toggle="modal" data-target="#projectNEW") Создать
-
                     #tab2.tab-pane.fade.in
-                        table(class='table task-table' width='100%')
-                            thead
-                                tr
-                                    td(width='25%')
-                                        h4 Задачи
-                                    td(width='25%')
-                                        h4 Описание
-                                    td(width='25%')
-                                        h4 Проект
-                                    td(width='25%')
-                                        h4 Функции
-                            tbody
-                                each v in user.tasks
+                        if user.tasks[0]
+                            table(class='table task-table' width='100%')
+                                thead
                                     tr
-                                        td(width='25%' data-status="waiting").droppable
-                                            div(class="taskCard")
-                                                h2 Задача #
-                                                h3 #{v._id}
-                                                    h4.black-text #{performDate(v.dateOfcreation)}
-                                                a(href="/task/" + v._id) полное описание задачи
                                         td(width='25%')
-                                            .content
-                                                h5.black-text !{v.description}
+                                            h4 Задачи
                                         td(width='25%')
-                                            each i in user.projects
-                                                if i._id.toString() == v.project.toString()
-                                                    h3 #{i.name}
+                                            h4 Описание
                                         td(width='25%')
-                                            h3
-                                                a(href='/board?project=' + v.project) Перейти к проекту
-                                            h3
-                                                a(href="") Отказаться от задачи
-                                            h3
-                                                a(href="javascript:removeTask('" + v._id + "');" ) Удалить задачу
+                                            h4 Проект
+                                        td(width='25%')
+                                            h4 Функции
+                                tbody
+                                    each v in user.tasks
+                                        tr(id=v._id)
+                                            td(width='25%' data-status="waiting").droppable
+                                                div(class="taskCard")
+                                                    h2 Задача #
+                                                    h3 #{v._id}
+                                                        h4.black-text #{performDate(v.dateOfcreation)}
+                                                    a(href="/task/" + v._id) полное описание задачи
+                                            td(width='25%')
+                                                .content
+                                                    h5.black-text !{v.description}
+                                            td(width='25%')
+                                                each i in user.projects
+                                                    if i._id.toString() == v.project.toString()
+                                                        h3 #{i.name}
+                                            td(width='25%')
+                                                h3
+                                                    a(href='/board?project=' + v.project) Перейти к проекту
+                                                h3
+                                                    a(href="javascript:refuseTask('" + v._id + "');" ) Отказаться от задачи
+                                                h3
+                                                    a(href="javascript:removeTask('" + v._id + "');" id="removeTask") Удалить задачу
+                        else
+                            h3.black-text.text-center
+                                |Вы пока не добавили задачи в разработку
                     #tab3.tab-pane.fade.in.text-center
                         .btn-pref.btn-group-vertical(role='group', aria-label='...')
                             .btn-group(role='group')
@@ -106,9 +102,21 @@ block content
                                     span.hidden-xs Пароль
 
                     #tab4.tab-pane.fade.in
-                        include pa_info.pug
+                        include changeInfo.pug
                     #tab5.tab-pane.fade.in
-                        include pa_contacts.pug
+                        include changeContacts.pug
                     #tab6.tab-pane.fade.in
-                        include pa_password.pug
+                        include changePassword.pug
     include addProjectModal.pug
+    script.
+        $("#removeTask").confirm({
+            title: 'Удалить задачу?',
+            content: 'Задача будет удалена',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });

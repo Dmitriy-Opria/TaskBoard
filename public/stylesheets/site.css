@@ -90,7 +90,9 @@ body {
 body .black-text{
   color: #333 !important;
 }
-.black-text p{
+.black-text p,
+.jconfirm-title,
+.jconfirm-content{
   color: #333 !important;
 }
 a {

@@ -12,11 +12,8 @@ const express = require('express'),
     moment = require('moment'),
     expressValidator = require('express-validator');
 
-//const form = new formidable.IncomingForm()
-
 
 const routes = require('./routes/index');
-//const users = require('./routes/users');
 
 const app = express();
 
@@ -46,7 +43,6 @@ app.locals.performDate = function (data) {
 //========================= session ================================
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-//const mongoose = require('mongoose');
 app.use(session({
     name: 'taskboard',
     secret: 'lgetmoremoney',
@@ -87,7 +83,6 @@ passport.use(new LocalStrategy({
 ));
 app.use(passport.initialize());
 app.use(passport.session());
-//app.use(app.router);
 app.post('/login', (req, res, next) => {
     console.log(req.body);
     passport.authenticate('local', (err, user) => {
@@ -114,12 +109,12 @@ app.all('\/login|\/registerme', (req, res, next) => {
     next();
 });
 
-app.all('\/task|\/profile|\/project|\/taskdesk|\/contacts', (req, res, next) => {
+app.all('\/task|\/profile|\/project|\/board|\/contacts', (req, res, next) => {
     if(req.session.user){
         next();
     }
     else{
-        res.redirect("/");
+        res.redirect("/login");
     }
 });
 app.use('/', routes);

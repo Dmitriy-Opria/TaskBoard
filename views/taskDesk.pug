@@ -7,7 +7,7 @@ block content
                     h3 Задача в разработке
                 else
                     h3#execute
-                        a(href="javascript:executeTask('" + task._id + "');" ) Взять задачу
+                        a(href="javascript:executeTask('" + task._id + "');" id="takeTask" ) Взять задачу
                 table.table.table-bordered
                     tr.black-text
                         td Задача #
@@ -30,13 +30,9 @@ block content
                         td
                             a(href='/board?project=' + task.project) Вернуться к проекту
                         td
-                            a(href="javascript:removeTask('" + task._id + "');" ) Удалить задачу
-        //h4
-            //a(data-toggle="collapse" href="#collapseDescription" aria-expanded="false" aria-controls="collapseExample") Описание
+                            a(href="javascript:removeTask('" + task._id + "');" id="removeTask") Удалить задачу
         .collapse#collapseDescription
             .well !{task.description}
-        //h4
-            //a(data-toggle="collapse" href="#collapseImages" aria-expanded="false" aria-controls="collapseExample") Вложенные файлы
         .collapse#collapseImages
             div.well
                 if task.images !== []
@@ -45,3 +41,26 @@ block content
                         br
                 else
                     em нет вложенных файлов
+    script.
+        $("#takeTask").confirm({
+            title: 'Взять задачу на разработку?',
+            content: 'Задача будет добавлена в Ваш список задач',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });
+        $("#removeTask").confirm({
+            title: 'Удалить задачу?',
+            content: 'Задача будет удалена',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });

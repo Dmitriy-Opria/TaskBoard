@@ -3,7 +3,7 @@ block content
     // Created by alexey-home on 30.11.16.
     .container
         .col-lg-4.col-lg-offset-4
-            form#register(action="/registerme" method="POST")
+            form#register(action="/registerMe" method="POST")
                 .form-group
                     label(for="userName" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
                         h2 Имя
@@ -71,7 +71,7 @@ block content
             $("#register").on('submit', function (form) {
                 $.ajax({
                     method: "POST",
-                    url: "/registerme",
+                    url: "/registerMe",
                     data: $(this).serialize(),
                     processData: false
                 })
@@ -81,7 +81,6 @@ block content
 
                         })
                         .fail(function (errInfo) {
-                            //console.log(errInfo.responseJSON.errInfo);
                             alertify.error(errInfo.responseJSON.errInfo);
                         })
                         .always(function () {

@@ -1,6 +1,6 @@
 .container
     .col-lg-4.col-lg-offset-4
-        form(id="cont" action="/change-contacts" method="POST")
+        form(id="cont" action="/changeContacts" method="POST")
             .form-group
                 label(for="exampleInputEmail1" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
                     h2 Email
@@ -42,7 +42,7 @@ script.
     $("#cont").on('submit', function (e) {
         $.ajax({
             method: "POST",
-            url: "/change-contacts",
+            url: "/changeContacts",
             data: $(this).serialize(),
             processData: false
         })

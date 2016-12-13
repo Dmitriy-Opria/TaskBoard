@@ -1,6 +1,6 @@
 .container
     .col-lg-4.col-lg-offset-4
-        form(id="info" action="/change-info" method="POST")
+        form(id="info" action="/changeInfo" method="POST")
             .form-group
                 label(for="userName" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
                     h2 Имя
@@ -42,7 +42,7 @@ script.
     $("#info").on('submit', function (e) {
         $.ajax({
             method: "POST",
-            url: "/change-info",
+            url: "/changeInfo",
             data: $(this).serialize(),
             processData: false
         })

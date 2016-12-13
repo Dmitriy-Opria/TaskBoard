@@ -11,7 +11,7 @@ $(document).ready(function () {
             $(this).append(ui.draggable);
             $.ajax({
                 method: "POST",
-                url: "/change-state",
+                url: "/changeState",
                 data: {id: ui.draggable.data('id'), status: $(this).data('status')}
             })
                 .done(function (msg) {
@@ -30,6 +30,22 @@ $(document).ready(function () {
     });
 
 });
+
+function refuseTask(taskID) {
+    "use strict";
+    $.ajax({
+        method: "POST",
+        url: "/refuseTask",
+        data: {id: taskID}
+    })
+        .done(function (id) {
+            alertify.success("Вы отказались от задачи!");
+            window.location.replace('/board?project=' + id.id);
+        })
+        .fail(function (errInfo) {
+            alertify.error(errInfo.responseJSON.errInfo);
+        })
+}
 function removeTask(taskID) {
     "use strict";
     $.ajax({
@@ -93,4 +109,5 @@ $(document).on('focusin', function (e) {
         e.stopImmediatePropagation();
     }
 });
+
 

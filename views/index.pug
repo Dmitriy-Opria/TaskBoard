@@ -25,7 +25,7 @@ block content
             .col-md-5
             form.form-inline#search
                 label.btn-succes(for="searchInput") Добавить учасника
-                input.form-control(type="text" id="searchInput" name="searchPerson")
+                input.form-control(type="email" id="searchInput" name="searchPerson" placeholder="E-MAIL")
                 input(type="hidden" value=ownerProject name="ownerProject")
                 button.btn.btn-succes#btn-problem(type='button' onclick="$('#search').submit()") Найти
         .row
@@ -165,7 +165,7 @@ block content
                     $(this).append(ui.draggable);
                     $.ajax({
                         method: "POST",
-                        url: "/change-state",
+                        url: "/changeState",
                         data: {id: ui.draggable.data('id'), status: $(this).data('status')}
                     })
                         .done(function (msg) {
@@ -199,7 +199,7 @@ block content
                 console.log("check");
                 $.ajax({
                     method: "POST",
-                    url: "/create",
+                    url: "/createTask",
                     data: new FormData(this),
                     processData: false,
                     contentType: false
