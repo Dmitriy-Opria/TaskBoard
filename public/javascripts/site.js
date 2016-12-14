@@ -39,8 +39,9 @@ function refuseTask(taskID) {
         data: {id: taskID}
     })
         .done(function (id) {
+            $("#execute").html('<div class="col-md-6"><h3><a href="javascript:executeTask(' + "'"+taskID+"'" + ')" class="takeTask">Взять задачу</a></h3></div>');
+
             alertify.success("Вы отказались от задачи!");
-            window.location.replace('/board?project=' + id.id);
         })
         .fail(function (errInfo) {
             alertify.error(errInfo.responseJSON.errInfo);
@@ -61,6 +62,7 @@ function removeTask(taskID) {
             alertify.error("Случилась ошибка операции!");
             window.location.replace('/board?project=' + id.id);
         })
+    taskID.preventDefault()
 }
 function executeTask(taskID) {
     "use strict";
@@ -70,12 +72,13 @@ function executeTask(taskID) {
         data: {id: taskID}
     })
         .done(function (successInfo) {
-            $("#execute").html("<h3>Задача в разработке</h3>");
+            $("#execute").html('<div class="col-md-6"><h3>Задача в разработке</h3></div><div class="col-md-6"><h3><a ia href="javascript:refuseTask(' + "'"+taskID+"'" + ')" class="refuseTask">Отказаться от задачи</a></h3></div>');
             alertify.success(successInfo.successInfo);
         })
         .fail(function (errInfo) {
             alertify.error(errInfo.responseJSON.errInfo);
         })
+    taskID.preventDefault();
 }
 function removeProject(projectID) {
     "use strict";
@@ -92,6 +95,7 @@ function removeProject(projectID) {
             alertify.error("Случилась ошибка операции!");
             window.location.replace("/profile");
         })
+    projectID.preventDefault();
 }
 function fireLogout() {
     $.post("/logout")
@@ -109,5 +113,7 @@ $(document).on('focusin', function (e) {
         e.stopImmediatePropagation();
     }
 });
+
+
 
 
