@@ -60,8 +60,11 @@ block content
                                 tbody
                                     each v in user.tasks
                                         tr(id=v._id)
-                                            td(width='25%' data-status="waiting").droppable
-                                                div(class="taskCard")
+                                            td(width='25%')
+                                                div.taskCard(class=v.priority)
+                                                    a(href="javascript:removeTaskList('" + v._id + "');" class="removeTask")
+                                                        button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                            span(aria-hidden='true') ×
                                                     h2 Задача #
                                                     h3 #{v._id}
                                                         h4.black-text #{performDate(v.dateOfcreation)}
@@ -77,9 +80,9 @@ block content
                                                 h3
                                                     a(href='/board?project=' + v.project) Перейти к проекту
                                                 h3
-                                                    a(href="javascript:refuseTask('" + v._id + "');" ) Отказаться от задачи
+                                                    a(href="javascript:refuseTaskList('" + v._id + "');" class="refuseTask") Отказаться от задачи
                                                 h3
-                                                    a(href="javascript:removeTask('" + v._id + "');" id="removeTask") Удалить задачу
+                                                    a(href="javascript:removeTaskList('" + v._id + "');" class="removeTask") Удалить задачу
                         else
                             h3.black-text.text-center
                                 |Вы пока не добавили задачи в разработку
@@ -109,9 +112,20 @@ block content
                         include changePassword.pug
     include addProjectModal.pug
     script.
-        $("#removeTask").confirm({
+        $(".removeTask").confirm({
             title: 'Удалить задачу?',
             content: 'Задача будет удалена',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });
+        $(".refuseTask").confirm({
+            title: 'Отказатсья от задачи?',
+            content: 'Задача будет удалена с Вашего списка задач',
             buttons: {
                 OK: function () {
                     location.href = this.$target.attr('href');

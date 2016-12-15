@@ -98,24 +98,32 @@ body .black-text{
 a {
   color: #00b7ff;
 }
-.waiting {
-  background-color: #EFD481 !important;
+table tr td .ordinary {
+  background-color: #94CA30;
+  border-top: 20px solid #3A8000;
 }
-.in-work {
-  background-color: #E2F7B9 !important;
+table tr td .height {
+  background-color: #E6D000;
+  border-top: 20px solid #A68800;
 }
-.to-check {
-  background-color: #B7F4D9 !important;
+table tr td .critical {
+  background-color: #ED502E;
+  border-top: 20px solid #B50000;
 }
-.closed {
-  background-color: #DCEAF4 !important;
+button.close {
+  margin-top: -20px;
+  margin-right: -5px;
 }
+
 .taskCard {
   -webkit-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
   box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
-  padding: 15px;
+  padding: 0px 15px 15px;
   display: inline-block;
+}
+table .ui-widget-content {
+  border: none;
 }
 .taskCard h2 {
   font-size: 18px;
@@ -132,8 +140,9 @@ a {
   font-weight: bold;
 }
 .taskCard a {
+  font-weight: 600;
   font-style: italic;
-  color: #00b7ff !important;
+  color: white!important;
 }
 .drop-hover {
   border: 2px dotted green;

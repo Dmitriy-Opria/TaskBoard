@@ -44,10 +44,14 @@ block content
                     tbody#tbody
                         each v in tasks
                             if v.status === 'waiting'
-                                tr
-                                    td(width='25%' data-status="waiting").droppable
-                                        div(class="taskCard draggable waiting ui-widget-content" data-id= v._id)
+                                tr(id=v._id)
+                                    td(width='25%' data-status="waiting" ).droppable#width
+                                        div(class="taskCard draggable waiting ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
@@ -59,11 +63,15 @@ block content
                                     td(width='25%' class="droppable" data-status="closed")
                                 continue
                             else if v.status === 'in-work'
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
-                                        div(class='taskCard draggable in-work' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable in-work' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
@@ -73,12 +81,16 @@ block content
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
                             else if v.status === 'to-check'
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
-                                        div(class='taskCard draggable sto-check' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable to-check' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
@@ -87,13 +99,17 @@ block content
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="closed")
                             else
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
-                                        div(class='taskCard draggable closed' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable closed' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
@@ -120,9 +136,9 @@ block content
 
                         label(for='priority') Приоритет задачи
                         select#priority.inline(name='priority')
-                            option(value='Обычный', selected='selected') Обычный
-                            option(value='Высокий') Высокий
-                            option(value='Критичный') Критичный
+                            option(value='ordinary', selected='selected') Обычный
+                            option(value='height') Высокий
+                            option(value='critical') Критичный
                 .modal-footer
                     button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
                     button.btn.btn-danger(type='button' onclick="$('#create-form').submit()") Создать
@@ -148,7 +164,7 @@ block content
                 '//www.tinymce.com/css/codepen.min.css'
             ]
         });
-        // чтоби работал редактор кода при создании задачи
+        // что б работал редактор кода при создании задачи
         $(document).on('focusin', function (e) {
             if ($(event.target).closest(".mce-window").length) {
                 e.stopImmediatePropagation();
@@ -156,7 +172,7 @@ block content
         });
         $(function () {
 
-            var width = $('body > div.container-fluid > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)').width();
+            var width = $(window).width()*0.23;
             $('.taskCard').css('width', width);
             $(".droppable").droppable({
                 accept: '.draggable',
@@ -236,4 +252,15 @@ block content
                         });
                 form.preventDefault();
             })
+            $(".removeTask").confirm({
+                title: 'Удалить задачу?',
+                content: 'Задача будет удалена',
+                buttons: {
+                    OK: function () {
+                        location.href = this.$target.attr('href');
+                    },
+                    ОТМЕНА: function () {
+                    }
+                }
+            });
         });

@@ -27,7 +27,12 @@ block content
                         td #{task.status}
                     tr.black-text
                         td Приоритет:
-                        td #{task.priority}
+                        if task.priority.toString() == "critical"
+                            td Критичный
+                        else if task.priority.toString() == "height"
+                            td Высокий
+                        else
+                            td Обычный
                     tr.black-text
                         td Дата постановки:
                         td #{performDate(task.dateOfcreation)}
@@ -40,7 +45,7 @@ block content
                         td
                             a(href='/board?project=' + task.project) Вернуться к проекту
                         td
-                            a(href="javascript:removeTask('" + task._id + "');" id="removeTask") Удалить задачу
+                            a(href="javascript:removeTask('" + task._id + "');" class="removeTask") Удалить задачу
         .collapse#collapseDescription
             .well !{task.description}
         .collapse#collapseImages
@@ -63,7 +68,7 @@ block content
                 }
             }
         });
-        $("#removeTask").confirm({
+        $(".removeTask").confirm({
             title: 'Удалить задачу?',
             content: 'Задача будет удалена',
             buttons: {

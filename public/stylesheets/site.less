@@ -1,11 +1,13 @@
 @h2-font-size: 18px;
 @link-color: #00b7ff;
-@waiting-status-color: #EFD481;
-@in-work-status-color: #E2F7B9;
-@to-check-status-color: #B7F4D9;
-@closed-status-color: #DCEAF4;
 @color_1: #262626;
 @color_2: #737373;
+@green-light: #94CA30;
+@green-dark:#3A8000;
+@red-light:#ED502E;
+@red-dark:#B50000;
+@yellow-light:#E6D000;
+@yellow-dark:#A68800;
 
 @media screen and (min-width: 1366px) {
   .custom-class {
@@ -113,23 +115,34 @@ body {
 a {
   color: @link-color;
 }
-.waiting{
-  background-color: @waiting-status-color !important;
+.taskCard a{
+  color: white;
 }
-.in-work{
-  background-color: @in-work-status-color !important;
+table tr td .ordinary {
+  background-color: @green-light;
+  border-top: 20px solid @green-dark;
 }
-.to-check{
-  background-color: @to-check-status-color  !important;
+table tr td .height {
+  background-color: @yellow-light;
+  border-top: 20px solid @yellow-dark;
 }
-.closed{
-  background-color: @closed-status-color !important;
+table tr td .critical {
+  background-color: @red-light;
+  border-top: 20px solid @red-dark;
+}
+button.close {
+  margin-top: -20px;
+  margin-right: -5px;
+}
+
+table .ui-widget-content {
+  border: none;
 }
 .taskCard{
-  -webkit-box-shadow: 2px 2px 15px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 2px 2px 15px 0px rgba(0,0,0,0.75);
-  box-shadow: 2px 2px 15px 0px rgba(0,0,0,0.75);
-  padding: 15px;
+  -webkit-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 2px 2px 15px 0px rgba(0, 0, 0, 0.75);
+  padding: 0px 15px 15px;
   display: inline-block;
   h2{
     font-size: @h2-font-size;

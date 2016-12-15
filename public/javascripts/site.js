@@ -2,8 +2,6 @@
  * Created by alexey-dev on 31.10.16.
  */
 $(document).ready(function () {
-    var width = $('body > div.container-fluid > div:nth-child(2) > div > table > tbody > tr:nth-child(1) > td:nth-child(1)').width();
-    $('.taskCard').css('width', width);
     $(".droppable").droppable({
         accept: '.draggable',
         hoverClass: "drop-hover",
@@ -29,6 +27,7 @@ $(document).ready(function () {
         opacity: 0.45
     });
 
+
 });
 
 function refuseTask(taskID) {
@@ -38,9 +37,24 @@ function refuseTask(taskID) {
         url: "/refuseTask",
         data: {id: taskID}
     })
-        .done(function (id) {
-            $("#execute").html('<div class="col-md-6"><h3><a href="javascript:executeTask(' + "'"+taskID+"'" + ')" class="takeTask">Взять задачу</a></h3></div>');
+        .done(function () {
+            $("#execute").html('<div class="col-md-6"><h3><a href="javascript:executeTask(' + "'"+taskID+"'" + ');" class="takeTask">Взять задачу</a></h3></div>');
 
+            alertify.success("Вы отказались от задачи!");
+        })
+        .fail(function (errInfo) {
+            alertify.error(errInfo.responseJSON.errInfo);
+        })
+}
+function refuseTaskList(taskID) {
+    "use strict";
+    $.ajax({
+        method: "POST",
+        url: "/refuseTask",
+        data: {id: taskID}
+    })
+        .done(function () {
+            $("#"+taskID).css("display", "none");
             alertify.success("Вы отказались от задачи!");
         })
         .fail(function (errInfo) {
@@ -64,6 +78,38 @@ function removeTask(taskID) {
         })
     taskID.preventDefault()
 }
+function removeTaskBoard(taskID) {
+    "use strict";
+    $.ajax({
+        method: "POST",
+        url: "/removeTask",
+        data: {id: taskID}
+    })
+        .done(function () {
+            alertify.success("Задача успешно удалена");
+            $("#"+taskID).detach();
+        })
+        .fail(function () {
+            alertify.error("Случилась ошибка операции!");
+        })
+    taskID.preventDefault()
+}
+function removeTaskList(taskID) {
+    "use strict";
+    $.ajax({
+        method: "POST",
+        url: "/removeTask",
+        data: {id: taskID}
+    })
+        .done(function () {
+            $("#"+taskID).css("display", "none");
+            alertify.success("Задача успешно удалена");
+        })
+        .fail(function () {
+            alertify.error("Случилась ошибка операции!");
+        })
+    taskID.preventDefault()
+}
 function executeTask(taskID) {
     "use strict";
     $.ajax({
@@ -72,7 +118,7 @@ function executeTask(taskID) {
         data: {id: taskID}
     })
         .done(function (successInfo) {
-            $("#execute").html('<div class="col-md-6"><h3>Задача в разработке</h3></div><div class="col-md-6"><h3><a ia href="javascript:refuseTask(' + "'"+taskID+"'" + ')" class="refuseTask">Отказаться от задачи</a></h3></div>');
+            $("#execute").html('<div class="col-md-6"><h3>Задача в разработке</h3></div><div class="col-md-6"><h3><a href="javascript:refuseTask(' + "'"+taskID+"'" + ');" class="refuseTask">Отказаться от задачи</a></h3></div>');
             alertify.success(successInfo.successInfo);
         })
         .fail(function (errInfo) {
@@ -87,11 +133,11 @@ function removeProject(projectID) {
         url: "/removeProject",
         data: {id: projectID}
     })
-        .done(function (msg) {
+        .done(function () {
             alertify.success("Проект успешно удален");
             window.location.replace("/profile");
         })
-        .fail(function (msg) {
+        .fail(function () {
             alertify.error("Случилась ошибка операции!");
             window.location.replace("/profile");
         })
@@ -113,6 +159,7 @@ $(document).on('focusin', function (e) {
         e.stopImmediatePropagation();
     }
 });
+
 
 
 
