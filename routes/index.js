@@ -118,26 +118,6 @@ router.get('/task/:id', (req, res, next) => {
         res.render('taskDesk', {task: doc, user: req.session.user});
     })
 });
-router.post('/login', (req, res) => {
-    "use strict";
-    User.findByEmail(req.body.username, (err, user) => {
-        if (err) {
-            res.redirect('/login');
-        }
-        else {
-            req.session.user = user;
-            req.session.save((err) => {
-                if (err) {
-                    console.error(err);
-                    res.redirect('/login');
-                }
-                else {
-                    res.redirect("/profile");
-                }
-            });
-        }
-    })
-});
 router.post('/registerMe', (req, res) => {
     "use strict";
     req.check('userFirstName', 'Длина имени должна быть 2-12 символов').isLength({min: 2, max: 12});

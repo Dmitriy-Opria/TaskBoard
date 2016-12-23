@@ -70,7 +70,7 @@ passport.use(new LocalStrategy({
                 return done(null, false, {message: 'Incorrect username.'});
             }
             else if(user) {
-                console.log(user);
+                console.log(user.name);
                 if (user.password !== password) return done(null, false, {message: 'Incorrect password.'});
             }
             else{
@@ -84,12 +84,18 @@ passport.use(new LocalStrategy({
 app.use(passport.initialize());
 app.use(passport.session());
 app.post('/login', (req, res, next) => {
-    console.log(req.body);
     passport.authenticate('local', (err, user) => {
-        if (!err) {
-            req.session.user = user;
-            res.redirect('/profile');
+        if(user===false){
+            res.sendStatus(500);
         }
+        else{
+            if (!err) {
+                req.session.user = user;
+                res.redirect('/profile');
+            }
+        }
+
+
     })(req, res, next)
 });
 passport.serializeUser(function (user, done) {
