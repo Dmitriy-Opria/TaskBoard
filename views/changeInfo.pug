@@ -1,0 +1,59 @@
+.container
+    .col-lg-4.col-lg-offset-4
+        form(id="info" action="/changeInfo" method="POST")
+            .form-group
+                label(for="userName" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
+                    h2 Имя
+                input(type="text" class="form-control wow fadeInRight" id="userName" placeholder="Имя" name="userFirstName" data-wow-offset='0', data-wow-delay='0.2s' value=user.name)
+            .form-group
+                label(for="userLastname" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
+                    h2 Фамилия
+                input(type="text" class="form-control wow fadeInRight" id="userLastname" placeholder="Фамилия" name="userLastName" data-wow-offset='0', data-wow-delay='0.2s' value=user.surname)
+            .form-group
+                button(type="reset" class="btn btn-default") Очистить
+                button(type="submit" class="btn btn-default to-save") Сохранить
+script.
+    $("#info").validate({
+        rules: {
+            userFirstName: {
+                required: true,
+                minlength: 2,
+                maxlength: 12
+            },
+            userLastName: {
+                required: true,
+                minlength: 2,
+                maxlength: 12
+            }
+        },
+        messages: {
+            userFirstName: {
+                required: "Пожалуйста введите имя",
+                minlength: "Минимальная длина имени 2 символа",
+                maxlength: "Максимальная длина имени 12 символов"
+            },
+            userLastName: {
+                required: "Пожалуйста введите фамилию",
+                minlength: "Минимальная длина фамилии 2 символа",
+                maxlength: "Максимальная длина фамилии 12 символов"
+            }
+        }
+    })
+    $("#info").on('submit', function (e) {
+        $.ajax({
+            method: "POST",
+            url: "/changeInfo",
+            data: $(this).serialize(),
+            processData: false
+        })
+            .done(function () {
+                alertify.success("Персональные данные изменены!");
+                window.location.replace("/profile");
+            })
+            .fail(function (errInfo) {
+                alertify.error(errInfo.responseJSON.errInfo);;
+            })
+            .always(function () {
+            });
+        e.preventDefault();
+    })

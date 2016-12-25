@@ -1,0 +1,28 @@
+extends layout
+block content
+    // Created by alexey-home on 30.11.16.
+    .container
+        .col-lg-4.col-lg-offset-4
+            form
+                .form-group
+                    label(for="userName" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
+                        h2 Имя
+                    input(type="text" class="form-control wow fadeInRight" id="userName" placeholder="Имя" name="userFirstName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 readonly value=user.name)
+                .form-group
+                    label(for="userLastname" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
+                        h2 Фамилия
+                    input(type="text" class="form-control wow fadeInRight" id="userLastname" placeholder="Фамилия" name="userLastName" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 minlength=2 readonly value=user.surname)
+
+                .form-group
+                    label(for="exampleInputEmail1" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
+                        h2 Email
+                    input(type="email" class="form-control wow fadeInRight" id="exampleInputEmail1" placeholder="E-мейл" name="userEmail"  data-wow-offset='0', data-wow-delay='0.2s' readonly value=user.email)
+                .form-group
+                    label(for="userTelephone" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s' required)
+                        h2 Телефон
+                    input(type="text" class="form-control wow fadeInRight" id="userTelephone" placeholder="Телефон" name="userTelephone" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 minlength=4 readonly value=user.tel)
+                .form-group
+                    label(for="userSkype" class="wow fadeInRight" data-wow-offset='0', data-wow-delay='0.1s')
+                        h2 Skype
+                    input(type="text" class="form-control wow fadeInRight" id="userSkype" placeholder="Skype" name="userSkype" data-wow-offset='0', data-wow-delay='0.2s' maxlength=25 minlength=4 readonly value=user.skype)
+

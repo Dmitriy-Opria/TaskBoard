@@ -1,0 +1,92 @@
+extends layout
+block content
+    if task.executant_id
+        .container
+            .row#execute
+                .col-md-6
+                    h3 Задача в разработке
+                if task.executant_id.toString() == user._id.toString()
+                    .col-md-6
+                        h3
+                            a(href="javascript:refuseTask('" + task._id + "');" class="refuseTask") Отказаться от задачи
+    else
+        .container
+            .row#execute
+                .col-md-6
+                    h3
+                        a(href="javascript:executeTask('" + task._id + "');" class="takeTask" ) Взять задачу
+    .container
+        .row
+            .col-md-12
+                table.table.table-bordered
+                    tr.black-text
+                        td Задача #
+                        td #{ task._id }
+                    tr.black-text
+                        td Статус:
+                        td #{task.status}
+                    tr.black-text
+                        td Приоритет:
+                        if task.priority.toString() == "critical"
+                            td Критичный
+                        else if task.priority.toString() == "height"
+                            td Высокий
+                        else
+                            td Обычный
+                    tr.black-text
+                        td Дата постановки:
+                        td #{performDate(task.dateOfcreation)}
+                    tr
+                        td
+                            a(data-toggle="collapse" href="#collapseDescription" aria-expanded="false" aria-controls="collapseExample") Описание
+                        td
+                            a(data-toggle="collapse" href="#collapseImages" aria-expanded="false" aria-controls="collapseExample") Вложенные файлы
+                    tr.black-text
+                        td
+                            a(href='/board?project=' + task.project) Вернуться к проекту
+                        td
+                            a(href="javascript:removeTask('" + task._id + "');" class="removeTask") Удалить задачу
+        .collapse#collapseDescription
+            .well !{task.description}
+        .collapse#collapseImages
+            div.well
+                if task.images !== []
+                    each val in task.images
+                        img(src="/" + val)
+                        br
+                else
+                    em нет вложенных файлов
+    script.
+        $(".takeTask").confirm({
+            title: 'Взять задачу на разработку?',
+            content: 'Задача будет добавлена в Ваш список задач',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });
+        $(".removeTask").confirm({
+            title: 'Удалить задачу?',
+            content: 'Задача будет удалена',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });
+        $(".refuseTask").confirm({
+            title: 'Отказатсья от задачи?',
+            content: 'Задача будет удалена с Вашего списка задач',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });

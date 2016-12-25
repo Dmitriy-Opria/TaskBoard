@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "no-cond-assign":"except-parens",
+    "no-constant-condition": true,
+    "no-dupe-args": true,
+    "allowImportExportEverywhere": false
+  }
+}

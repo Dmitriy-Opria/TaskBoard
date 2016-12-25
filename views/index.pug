@@ -2,79 +2,122 @@ extends layout
 block content
     input(id="reloadValue" type="hidden" name="reloadValue" value="")
     .container-fluid
-        .expanded.row
-            button.btn.btn-success(type='button', data-toggle='modal', data-target='#myModal') создать задачу
-            button.btn.btn-danger.pull-right(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+        .card.hovercard
+            .card-background
+                img.card-bkimg(alt='', src='http://lorempixel.com/100/100/people/9/')
+                // http://lorempixel.com/850/280/people/9/
+            .useravatar
+                img(alt='', src=user.avatar)
+            .card-info
+                span.card-title #{user.name}
+        .row
+            .col-md-2
+                button.btn.btn-succes(type='button', data-toggle='modal', data-target='#myModal') создать задачу
+            .col-md-5
+                label.btn-succes(for="members") Учасники проекта
+                select.btn-succes(id="members")
+                    if projectUsers
+                        for use in projectUsers
+                            option #{use.email}
+                    else
+                        option
+                            |None
+            .col-md-5
+            form.form-inline#search
+                label.btn-succes(for="searchInput") Добавить учасника
+                input.form-control(type="email" id="searchInput" name="searchPerson" placeholder="E-MAIL")
+                input(type="hidden" value=ownerProject name="ownerProject")
+                button.btn.btn-succes#btn-problem(type='button' onclick="$('#search').submit()") Найти
         .row
             .col-lg-12.col-md-12.col-sm-12.col-xs-12
                 table(class='table task-table' width='100%')
                     thead
                         tr
-                            td(width='25%') Ожидающие
-                            td(width='25%') В работе
-                            td(width='25%') На проверку
-                            td(width='25%') Закрытые
-                    tbody
+                            td(width='25%')
+                                h4 Ожидающие
+                            td(width='25%')
+                                h4 В работе
+                            td(width='25%')
+                                h4 На проверку
+                            td(width='25%')
+                                h4 Закрытые
+                    tbody#tbody
                         each v in tasks
                             if v.status === 'waiting'
-                                tr
-                                    td(width='25%' class="droppable" data-status="waiting")
-                                        div(class='taskCard draggable waiting' class="ui-widget-content" data-id= v._id)
+                                tr(id=v._id)
+                                    td(width='25%' data-status="waiting" ).droppable#width
+                                        div(class="taskCard draggable waiting ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
                                 continue
                             else if v.status === 'in-work'
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
-                                        div(class='taskCard draggable in-work' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable in-work' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
                             else if v.status === 'to-check'
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
-                                        div(class='taskCard draggable sto-check' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable to-check' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
                                     td(width='25%' class="droppable" data-status="closed")
                             else
-                                tr
+                                tr(id=v._id)
                                     td(width='25%' class="droppable" data-status="waiting")
                                     td(width='25%' class="droppable" data-status="in-work")
                                     td(width='25%' class="droppable" data-status="to-check")
                                     td(width='25%' class="droppable" data-status="closed")
-                                        div(class='taskCard draggable closed' class="ui-widget-content" data-id= v._id)
+                                        div(class='taskCard draggable closed' class="ui-widget-content" class=v.priority data-id= v._id)
+                                            a(href="javascript:removeTaskBoard('" + v._id + "');" class="removeTask")
+                                                button.close(type='button', data-toggle="modal" data-target="#deleteModal")
+                                                    span(aria-hidden='true') ×
                                             h2 Задача #
+                                            br
                                             h3 #{v._id}
 
                                                 h4 #{performDate(v.dateOfcreation)}
                                                 .content
-                                                    h5 #{v.description}
+                                                    h5 !{v.description}
                                             a(href="/task/" + v._id) полное описание задачи
 
-    // modal
+    // modal for new task
     #myModal.modal.fade(tabindex='-1', role='dialog')
         .modal-dialog.custom-class(role='document')
             .modal-content
@@ -83,26 +126,26 @@ block content
                         span(aria-hidden='true') ×
                     h4.modal-title Новая задача
                 .modal-body
-                    form(id="create-form" enctype="multipart/form-data" class="form-horizontal")
+                    form(id="create-form" enctype="multipart/form-data" class="form-horizontal" method="POST")
+                        input(type="hidden" value=ownerProject name="ownerProject")
+                        label(for='description') Описание задачи
+                        textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
 
-                            label(for='description') Описание задачи
-                            textarea#description.form-control(minlength='5', maxlength='512', required='' name="description")
+                        label(for='InputFile') Вложить скриншот
+                        input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
 
-                            label(for='InputFile') вложить скриншот
-                            input#InputFile.inline(type='file' name="files" accept="image/jpeg,image/png,image/gif" multiple)
-
-                            label(for='priority') приоритет задачи
-                            select#priority.inline(name='priority')
-                                option(value='обычный', selected='selected') обычный
-                                option(value='высокий') высокий
-                                option(value='критичный') критичный
+                        label(for='priority') Приоритет задачи
+                        select#priority.inline(name='priority')
+                            option(value='ordinary', selected='selected') Обычный
+                            option(value='height') Высокий
+                            option(value='critical') Критичный
                 .modal-footer
-                    button.btn.btn-default(type='button', data-dismiss='modal') Отмена
-                    button.btn.btn-primary(type='button' onclick="$('#create-form').submit()") Создать
+                    button.btn.btn-warning(type='button', data-dismiss='modal') Отмена
+                    button.btn.btn-danger(type='button' onclick="$('#create-form').submit()") Создать
     script.
         tinymce.init({
             selector: 'textarea',
-            height: 500,
+            height: 250,
             theme: 'modern',
             plugins: [
                 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
@@ -121,9 +164,42 @@ block content
                 '//www.tinymce.com/css/codepen.min.css'
             ]
         });
-
+        // что б работал редактор кода при создании задачи
+        $(document).on('focusin', function (e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
         $(function () {
-            shave(".content h5",70);
+
+            var width = $(window).width()*0.23;
+            $('.taskCard').css('width', width);
+            $(".droppable").droppable({
+                accept: '.draggable',
+                hoverClass: "drop-hover",
+                drop: function (event, ui) {
+                    $(this).append(ui.draggable);
+                    $.ajax({
+                        method: "POST",
+                        url: "/changeState",
+                        data: {id: ui.draggable.data('id'), status: $(this).data('status')}
+                    })
+                        .done(function (msg) {
+                            alertify.success("Статус задачи успешно изменен!");
+                        })
+                        .fail(function (msg) {
+                            alertify.error("Случилась ошибка операции!");
+                        })
+                }
+            });
+            $(".draggable").draggable({
+                helper: "clone",
+                axis: "x",
+                cursor: "crosshair",
+                opacity: 0.45
+            });
+
+            shave(".content h5", 70);
             var d = new Date();
             d = d.getTime();
             if (jQuery('#reloadValue').val().length === 0) {
@@ -136,23 +212,55 @@ block content
             }
             $("#create-form").on('submit', function (form) {
                 tinyMCE.triggerSave();
+                console.log("check");
                 $.ajax({
                     method: "POST",
-                    url: "/create",
+                    url: "/createTask",
                     data: new FormData(this),
                     processData: false,
                     contentType: false
                 })
-                        .done(function (template) {
-                            $("body > div.container-fluid > div:nth-child(2) > div > table > tbody")
-                                    .append(template.html)
+                    .done(function (template) {
+                        $("#tbody")
+                            .append(template.html)
+                    })
+                    .fail(function (error) {
+                        // show error message
+                    })
+                    .always(function () {
+                        $("#myModal").modal("hide");
+                    });
+                form.preventDefault();
+            })
+            $("#search").on('submit', function (search) {
+                $.ajax({
+                    method: "POST",
+                    url: "/searchUser",
+                    data: $(this).serialize(),
+                    processData: false
+                })
+                        .done(function (emailInfo) {
+                            alertify.success("Учасник добавлен!");
+                            $("#members").append("<option>" + emailInfo.emailInfo + "</option>");
+                            console.log(emailInfo.emailInfo);
                         })
-                        .fail(function (error) {
-                            // show error message
+                        .fail(function (errInfo) {
+                            console.log(errInfo.responseJSON.errInfo);
+                            alertify.error(errInfo.responseJSON.errInfo);
                         })
                         .always(function () {
-                            $("#myModal").modal("hide");
                         });
                 form.preventDefault();
             })
+            $(".removeTask").confirm({
+                title: 'Удалить задачу?',
+                content: 'Задача будет удалена',
+                buttons: {
+                    OK: function () {
+                        location.href = this.$target.attr('href');
+                    },
+                    ОТМЕНА: function () {
+                    }
+                }
+            });
         });
