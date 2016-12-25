@@ -35,10 +35,6 @@ p {
 }
 a {
     text-decoration:none;
-    transition: all 0.1s ease-in-out;
-    -moz-transition: all 0.1s ease-in-out;
-    -webkit-transition: all 0.1s ease-in-out;
-    -o-transition: all 0.1s ease-in-out;
     outline: none;
     color:#333;
 }
@@ -74,6 +70,47 @@ a:hover {
 }
 
 .btn-default {
+     color: #333;
+     background: none;
+     border-color: transparent!important;
+     text-transform:uppercase!important;
+     font-size:18px;
+     border-radius:30px;
+     margin-left:-10px;
+     margin-top: 40px;
+     padding: 12px;
+ }
+
+.btn-default:hover {
+    background:none;
+    color:#ED502E;
+    border-color: transparent!important;
+}
+.btn-def {
+    color: #333;
+    background: none;
+    border-color: transparent!important;
+    text-transform:uppercase!important;
+    font-size:18px;
+    border-radius:30px;
+    margin-left:-10px;
+    margin-top: 40px;
+    padding: 12px;
+
+}
+.btn-def.active,
+.btn-def:hover {
+    background:none;
+    color:#ED502E;
+    border-color: transparent!important;
+    box-shadow: none
+}
+.btn-def:focus{
+    background:none;
+    border-color: transparent!important;
+    box-shadow: none
+}
+.in-front{
     color: #333;
     background: none;
     border-color: transparent!important;
@@ -84,11 +121,13 @@ a:hover {
     margin-top: 40px;
     padding: 12px;
 }
-
-.btn-default:hover {
+.in-front:focus,
+.in-front:active,
+.in-front:hover{
+    color: #fff;
     background:none;
-    color:#ED502E;
     border-color: transparent!important;
+    box-shadow: none
 }
 .btn-succes{
     color: #333;
@@ -209,7 +248,6 @@ a:hover {
 }
 
 .main-feature {
-    padding-bottom:50px;
     padding-top:80px;
 }
 
@@ -1009,6 +1047,9 @@ ul.social-network li a {
     padding:5px 10px;
     background:#000;
     border-radius:50%;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
 }
 
 .social-network li:hover .fa-twitter {
