@@ -71,6 +71,7 @@ ProjectModel.pre('remove', function (next) {
     }
     next();
 });
+mongoose.Promise = global.Promise;
 const connection = mongoose.createConnection('mongodb://localhost:27017/taskboard');
 
 const Task = connection.model('Task', TaskModel),
