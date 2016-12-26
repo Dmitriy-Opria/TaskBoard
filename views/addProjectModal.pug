@@ -11,11 +11,11 @@
                     .form-group
                         label(for='exampleInputEmail1')
                             h2 Имя проекта
-                        input#exampleInputEmail1.form-control(type='text', placeholder='' name="projectname")
+                        input#exampleInputEmail1.form-control(type='text', placeholder='' name="projectName")
                     .form-group
                         label(for='exampleInputEmail2')
                             h2 Описание проекта
-                        textarea#exampleInputEmail2.form-control(placeholder='' name="projectdescription")
+                        textarea#exampleInputEmail2.form-control(placeholder='' name="projectDescription")
                     .form-group
                         label(for='exampleInputEmail3')
                             h2 Обложка проекта
@@ -23,3 +23,30 @@
             .modal-footer
                 button.btn.btn-warning(type='button', data-dismiss='modal') Закрыть
                 button.btn.btn-danger(type='button' onclick="$('#createProjectForm').closest('form').submit();") Создать проект
+    script.
+        $("#createProjectForm").validate({
+            rules: {
+                projectName: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 30
+                },
+                projectDescription: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                projectName: {
+                    required: "Пожалуйста введите название проекта",
+                    minlength: "Минимальная длина названия 2 символа",
+                    maxlength: "Максимальная длина названия 30 символов"
+                },
+                projectDescription: {
+                    required: "Пожалуйста введите описание проекта",
+                    minlength: "Минимальная длина описания 2 символа",
+                    maxlength: "Максимальная длина описания 255 символов"
+                }
+            }
+        })
