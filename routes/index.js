@@ -578,73 +578,73 @@ router.post('/removeTask', (req, res) => {
 });
 router.post('/newProject', upload.single('cover'), (req, res, next) => {
     "use strict";
-    req.checkBody('projectname', 'Invalid postparam').notEmpty().isLength({max: 30});
-    req.checkBody('projectdescription', 'Invalid postparam').notEmpty().isLength({max: 255});
-    if (req.file) {
-        if (req.file.size > 8388608) next("Размер обложки проекта слишком большой (8мб максимум)");
-        const newFileName = Date.now() + req.file.originalname;
-        fs.readFile(req.file.path,(err, content) =>{
-            if (err) {
-                next(err);
-            }
-            else {
-                fs.writeFile(path.join(__dirname, '../public/images/covers/') + newFileName, content,(err) =>{
-                    if (err) {
-                        next(err);
-                    }
-                    else {
-                        Project.create({
-                            owner_id : req.session.user._id,
-                            name: req.body.projectname,
-                            cover: 'images/covers/' + newFileName,
-                            description: req.body.projectdescription,
-                            users: req.session.user._id
-                        }, (err, project) => {
-                            if (err) {
-                                next(err);
-                            }
-                            else {
-                                User.findOne({_id: req.session.user._id}, (err, doc) => {
-                                    doc.projects.push(project);
-                                    doc.save((err, updatedDoc) => {
-                                        next(err);
-                                        res.redirect('/profile');
-                                    });
-                                })
-                            }
-                        })
-                    }
-                })
-            }
-        })
+    req.check('projectName', 'Invalid postparam').notEmpty().isLength({min:2, max: 30});
+    req.check('projectDescription', 'Invalid postparam').notEmpty().isLength({min:2, max: 255});
+
+    let errors = req.validationErrors();
+    console.log(errors);
+    if(!errors){
+        if (req.file) {
+            if (req.file.size > 8388608) next("Размер обложки проекта слишком большой (8мб максимум)");
+            const newFileName = Date.now() + req.file.originalname;
+            fs.readFile(req.file.path,(err, content) =>{
+                if (err) {
+                    next(err);
+                }
+                else {
+                    fs.writeFile(path.join(__dirname, '../public/images/covers/') + newFileName, content,(err) =>{
+                        if (err) {
+                            next(err);
+                        }
+                        else {
+                            Project.create({
+                                owner_id : req.session.user._id,
+                                name: req.body.projectName,
+                                cover: 'images/covers/' + newFileName,
+                                description: req.body.projectDescription,
+                                users: req.session.user._id
+                            }, (err, project) => {
+                                if (err) {
+                                    next(err);
+                                }
+                                else {
+                                    User.findOne({_id: req.session.user._id}, (err, doc) => {
+                                        doc.projects.push(project);
+                                        doc.save((err) => {
+                                            next(err);
+                                            res.redirect('/profile');
+                                        });
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        else{
+            Project.create({
+                owner_id : req.session.user._id,
+                name: req.body.projectName,
+                cover: 'images/dc.png',
+                description: req.body.projectDescription,
+                users: req.session.user._id
+            }, (err, project) => {
+                if (err) {
+                    next(err);
+                }
+                else {
+                    User.findOne({_id: req.session.user._id}, (err, doc) => {
+                        doc.projects.push(project);
+                        doc.save((err) => {
+                            next(err);
+                            res.redirect('/profile');
+                        });
+                    })
+                }
+            })
+        }
     }
-    else{
-        Project.create({
-            owner_id : req.session.user._id,
-            name: req.body.projectname,
-            cover: 'images/dc.png',
-            description: req.body.projectdescription,
-            users: req.session.user._id
-        }, (err, project) => {
-            if (err) {
-                next(err);
-            }
-            else {
-                User.findOne({_id: req.session.user._id}, (err, doc) => {
-                    doc.projects.push(project);
-                    doc.save((err, updatedDoc) => {
-                        next(err);
-                        res.redirect('/profile');
-                    });
-                })
-            }
-        })
-    }
-
-
-
-
-
 });
 router.post('/removeProject', (req, res) => {
     "use strict";
