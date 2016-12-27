@@ -1,6 +1,4 @@
-/**
- * Created by alexey-dev on 31.10.16.
- */
+
 $(document).ready(function () {
     $(".droppable").droppable({
         accept: '.draggable',
