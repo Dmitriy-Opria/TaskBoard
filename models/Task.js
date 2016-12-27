@@ -1,6 +1,3 @@
-/**
- * Created by alexey-dev on 23.10.16.
- */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 import fs from "fs";

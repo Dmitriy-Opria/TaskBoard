@@ -38,7 +38,7 @@ block content
                                             p
                                                 a.btn.btn-warning(href='/board?project=' + val._id, role='button') Перейти к доске проекта
                                             p
-                                                a.btn.btn-danger(href="javascript:removeProject('"+val._id+"');" ) Удалить проект
+                                                a.btn.btn-danger.refuseProject(href="javascript:removeProject('"+val._id+"');" ) Удалить проект
                             .col-sm-6.col-md-4.col-lg-3
                                 .thumbnail
                                     img(src='images/addP.png', alt='...')
@@ -67,9 +67,10 @@ block content
                                                     a(href="javascript:removeTaskList('" + v._id + "');" class="removeTask")
                                                         button.close(type='button', data-toggle="modal" data-target="#deleteModal")
                                                             span(aria-hidden='true') ×
-                                                    h2 Задача #
-                                                    h3 #{v._id}
+                                                    h2 Задача # #{v.number}
                                                         h4.black-text #{performDate(v.dateOfcreation)}
+                                                        .content
+                                                            h5 !{v.description}
                                                     a(href="/task/" + v._id) полное описание задачи
                                             td(width='25%')
                                                 .content
@@ -136,3 +137,19 @@ block content
                 }
             }
         });
+        $(".refuseProject").confirm({
+            title: 'Удалить проект?',
+            content: 'Проект будет удален',
+            buttons: {
+                OK: function () {
+                    location.href = this.$target.attr('href');
+                },
+                ОТМЕНА: function () {
+                }
+            }
+        });
+        $(function () {
+
+            var width = $(window).width() * 0.23;
+            $('.taskCard').css('width', width);
+        })
